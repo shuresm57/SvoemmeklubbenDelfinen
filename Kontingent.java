@@ -8,16 +8,24 @@ public class Kontingent {
     private static final double SENIOR_RABAT = 0.75;
     private static final double PASSIVT_KONTINGENT = 500.0;
     private List<Medlem> medlemmer = new ArrayList<Medlem>();
+    private Medlem medlem;
 
-    public static double beregnKontingent(Medlem medlem) {
-        if (medlem.erPassiv()) {
-            return PASSIVT_KONTINGENT;
-        } else if (medlem.erJunior()) {
-            return UNGDOMS_KONTINGENT;
-        } else if (medlem.erSenior()) {
-            return SENIOR_KONTINGENT * SENIOR_RABAT;
-        } else {
-            return SENIOR_KONTINGENT;
+    public List<Medlem> getMedlemmer() {
+        return medlemmer;
+    }
+
+    public double beregnKontingent() {
+        for (Medlem medlem : medlemmer) {
+
+            if (medlem instanceof PassivtMedlem) {
+                return PASSIVT_KONTINGENT;
+            } else if (medlem instanceof KonkurrenceSvoemmer && medlem.erJunior() || medlem instanceof Motionist && medlem.erJunior()) {
+                return UNGDOMS_KONTINGENT;
+            } else if (medlem instanceof KonkurrenceSvoemmer && medlem.erSenior() || medlem instanceof Motionist && medlem.erSenior()) {
+                return SENIOR_KONTINGENT * SENIOR_RABAT;
+            } else if (medlem instanceof KonkurrenceSvoemmer || medlem instanceof Motionist){
+                return SENIOR_KONTINGENT;
+            }
         }
     }
 

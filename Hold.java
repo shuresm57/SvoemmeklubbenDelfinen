@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class Hold {
@@ -9,7 +7,7 @@ public class Hold {
     private String ugeDag;
     private int tid;
     private List<KonkurrenceSvoemmer> deltagere = new ArrayList<>();
-    private List<Hold> hold = new ArrayList<>();
+    private static List<Hold> holdListe = new ArrayList<>();
     private String holdnavn;
 
     public Hold(String holdnavn, Traener traener, String ugeDag, int tid) {
@@ -17,27 +15,26 @@ public class Hold {
         this.traener = traener;
         this.ugeDag = ugeDag;
         this.tid = tid;
-        hold.add(this);
+        holdListe.add(this);
     }
 
-public void holdListe(){
-    System.out.println(deltagere);
-}
-
-    public void holdListe(){
-        System.out.println(deltagere);
+    public static List<Hold> getHoldListe() {
+        return holdListe;
     }
 
-    public void tilfoejTilHold(KonkurrenceSvoemmer svoemmer){
+    public String getHoldnavn() {
+        return holdnavn;
+    }
+
+    public void tilfoejTilHold(KonkurrenceSvoemmer svoemmer) {
         deltagere.add(svoemmer);
         svoemmer.setHold(this);
         svoemmer.setTraener(this.traener);
     }
 
-    public void getAlleHold(){
-        System.out.println(hold.toString());
+    public void getAlleHold() {
+        System.out.println(holdListe.toString());
     }
-
 
     public Traener getTraener() {
         return traener;
@@ -51,8 +48,8 @@ public void holdListe(){
         return tid;
     }
 
-
-    public String toString() { // virker ikke ordentligt i det, at der mangler deltagere m.m.
-        return "Hold: " + holdnavn + ", Træner: " + traener + ", Deltagere: " + deltagere;
+    @Override
+    public String toString() {
+        return "Hold: " + holdnavn + ", Træner: " + (traener != null ? traener.getNavn() : "Ingen træner") + ", Ugedag: " + ugeDag + ", Tid: " + tid + ", Deltagere: " + deltagere;
     }
 }

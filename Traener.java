@@ -1,4 +1,3 @@
-import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +13,15 @@ public class Traener {
 
 
     public Traener(String navn, int alder, String telefon, String email){
-    this.navn = navn;
-    this.alder = alder;
-    this.telefon = telefon;
-    this.email = email;
+        this.navn = navn;
+        this.alder = alder;
+        this.telefon = telefon;
+        this.email = email;
     }
 
-    public static Collection<Traener> getTraenerListe() {
+    public List<Traener> getTraenerListe() {
+        return traenerListe;
+
     }
 
     public String getNavn() {
@@ -55,9 +56,11 @@ public class Traener {
         this.email = email;
     }
 
-    public String getTraener() {
-        String tr = hold.getTraener().toString();
-        return tr;
+    public Traener getTraener() {
+        if (this.hold == null){
+            throw new NullPointerException("Træeneren er ikke tilføjet til et hold");
+        }
+        return this.hold.getTraener();
     }
 
 
@@ -68,10 +71,6 @@ public class Traener {
     public void setHold(Hold hold) {
         this.hold = hold;
     }
-
-public static List<Traener> getTraenerListe() {
-        return traenerListe;
-}
 
 
     @Override
