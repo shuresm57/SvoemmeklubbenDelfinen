@@ -27,12 +27,14 @@ public class Kontingent {
                 return SENIOR_KONTINGENT;
             }
         }
+        return 0;
     }
 
-    public double totalKontingent() {
+    public double totalKontingent()
+    {
         double total = 0.0;
         for (Medlem medlem : medlemmer) {
-            total += beregnKontingent(medlem);
+            total += beregnKontingent();
         }
         return total;
     }
