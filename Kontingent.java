@@ -9,6 +9,8 @@ public class Kontingent {
     private static final double PASSIVT_KONTINGENT = 500.0;
     private List<Medlem> medlemmer = new ArrayList<Medlem>();
     private Medlem medlem;
+    private PersonPersistens pp = new PersonPersistens();
+
 
     public Kontingent() {
         pp.loadMedlemmerFromFile();
@@ -38,8 +40,7 @@ public class Kontingent {
         return kontingent;
     }
 
-    public double totalKontingent()
-    {
+    public double totalKontingent(){
         double total = 0.0;
 
         for(Medlem medlem : medlemmer){
@@ -54,9 +55,9 @@ public class Kontingent {
         for (Medlem medlem : medlemmer) {
             if (medlem.erIRestance()) {
                 iRestance.add(medlem);
+                System.out.println(iRestance);
             }
         }
-        return iRestance;
     }
 
 }

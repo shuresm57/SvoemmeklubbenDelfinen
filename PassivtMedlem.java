@@ -1,7 +1,9 @@
+import java.time.LocalDate;
+
 public class PassivtMedlem extends Medlem {
 
-    public PassivtMedlem(String medlemsnummer, String navn, int alder, String telefon, String email) {
-        super(medlemsnummer, navn, alder, telefon, email);
+    public PassivtMedlem(String medlemsnummer, String navn, String fødselsdato, String telefon, String email) {
+        super(medlemsnummer, navn, fødselsdato, telefon, email);
     }
 
     @Override

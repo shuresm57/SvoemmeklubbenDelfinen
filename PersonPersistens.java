@@ -8,6 +8,7 @@ import java.time.format.DateTimeParseException;
 
 public class PersonPersistens {
 
+
     private static final String FILE_PATH = "medlemmer.txt";  // Filstien til at gemme og læse medlemmer fra.
     private List<Medlem> medlemmer = new ArrayList<>();// Liste til at gemme medlemmer.
     private List<String> medlemsNumre = new ArrayList<>();
@@ -70,12 +71,49 @@ public class PersonPersistens {
             System.out.println("Vælg medlemstype (1 = Konkurrencesvømmer, 2 = Motionist, 3 = Passivt medlem): ");
             medlemstype = scanner.nextLine().trim();
 
-            // Tjek om input er gyldigt
-            if ("1".equalsIgnoreCase(medlemstype) || "2".equalsIgnoreCase(medlemstype) || "3".equalsIgnoreCase(medlemstype)) {
-                break;  // Udfør ud af løkken hvis input er gyldigt
-            } else {
-                System.out.println("Ugyldigt valg, prøv igen.");  // Hvis input er ugyldigt, vis en fejlmeddelelse
+            String medlemsnummer = genererMedlemsnummer(medlemstype);
+            // Bed brugeren om at indtaste oplysninger for medlemmet
+            System.out.println("Indtast navn: ");
+            String navn = scanner.nextLine();
+            String foedselsdato = null;
+            while (foedselsdato == null) {
+                try {
+                    System.out.println("Indtast foedselsdato (dd-MM-yyyy): ");
+                    String foedselsdatoInput = scanner.nextLine();
+                    foedselsdato = String.valueOf(LocalDate.parse(foedselsdatoInput, DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                } catch (DateTimeParseException e) {
+                    System.out.println("Forkert format. Prøv igen med formatet dd-MM-yyyy.");
+                }
             }
+
+            System.out.println("Indtast telefonnummer: ");
+            String telefon = scanner.nextLine();
+
+            System.out.println("Indtast email: ");
+            String email = scanner.nextLine();
+
+            // Opret medlemmet baseret på medlemstype
+            Medlem medlem = null;
+            if ("1".equalsIgnoreCase(medlemstype)) {
+                medlem = new KonkurrenceSvoemmer(medlemsnummer, navn, foedselsdato, telefon, email);
+            } else if ("2".equalsIgnoreCase(medlemstype)) {
+                medlem = new Motionist(medlemsnummer, navn, foedselsdato, telefon, email);
+            } else if ("3".equalsIgnoreCase(medlemstype)) {
+                medlem = new PassivtMedlem(medlemsnummer, navn, foedselsdato, telefon, email);
+
+            }
+
+            // Tilføj medlemmet til listen
+            if (medlem != null) {
+                medlemmer.add(medlem);
+                medlemsNumre.add(medlemsnummer);
+                saveMedlemToFile();
+                System.out.println("Medlem oprettet: " + medlem.getMedlemsnummer());
+                break;
+            } else {
+                System.out.println("Ugyldig medlemstype valgt.");
+            }
+            // Tjek om input er gyldigt
         }
     }
 
@@ -83,9 +121,11 @@ public class PersonPersistens {
     public void saveMedlemToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (Medlem medlem : medlemmer) {
-                writer.write(medlem.getMedlemsnummer() + "," + medlem.getMedlemstype() + "," + medlem.getNavn() + "," + medlem.getAlder() + "," + medlem.getTelefon() + "," + medlem.getEmail());
+                writer.write(medlem.getMedlemsnummer() + "," + medlem.getMedlemstype() + "," + medlem.getNavn() + "," + medlem.getFoedselsdato() + "," + medlem.getTelefon() + "," + medlem.getEmail());
                 writer.newLine();
             }
+
+            //medlemmer.add(medlem);
             System.out.println("Medlemmerne er blevet gemt.");
         } catch (IOException e) {
             System.out.println("Fejl ved gemning til fil: " + e.getMessage());
@@ -108,9 +148,13 @@ public class PersonPersistens {
 
                     Medlem medlem = null;
                     if ("KonkurrenceSvoemmer".equalsIgnoreCase(medlemstype)) {
-                        medlem = new KonkurrenceSvoemmer(medlemsnummer, navn, alder, telefon, email);
+                        medlem = new KonkurrenceSvoemmer(medlemsnummer, navn,foedselsdato, telefon, email);
+                        medlemmer.add(medlem);
+                        medlemsNumre.add(medlemsnummer);
                     } else if ("Motionist".equalsIgnoreCase(medlemstype)) {
-                        medlem = new Motionist(medlemsnummer, navn, alder, telefon, email);
+                        medlem = new Motionist(medlemsnummer, navn, foedselsdato, telefon, email);
+                        medlemmer.add(medlem);
+                        medlemsNumre.add(medlemsnummer);
                     } else if ("PassivtMedlem".equalsIgnoreCase(medlemstype)) {
                         medlem = new PassivtMedlem(medlemsnummer, navn, foedselsdato, telefon, email);
                         medlemmer.add(medlem);
@@ -222,4 +266,6 @@ public class PersonPersistens {
         }
 
     }
+
+
 }
