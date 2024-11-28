@@ -1,7 +1,8 @@
+import java.time.LocalDate;
 public class KonkurrenceSvoemmer extends Medlem {
 
-    public KonkurrenceSvoemmer(String medlemsnummer, String navn, int alder, String telefon, String email) {
-        super(medlemsnummer, navn, alder, telefon, email);
+    public KonkurrenceSvoemmer(String medlemsnummer, String navn, String foedselsdato, String telefon, String email) {
+        super(medlemsnummer, navn, foedselsdato, telefon, email);
     }
 
     @Override

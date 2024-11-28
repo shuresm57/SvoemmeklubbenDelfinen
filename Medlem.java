@@ -1,11 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.Period;
 
 public abstract class Medlem {
 
     protected String medlemsnummer;
     protected String navn;
     protected int alder;
+    protected String foedselsdato;
     protected boolean erPassiv;
     protected String telefon;
     protected String email;
@@ -16,10 +19,10 @@ public abstract class Medlem {
         this.medlemmer = new ArrayList<>();
     }
 
-    public Medlem(String medlemsnummer, String navn, int alder, String telefon, String email) {
+    public Medlem(String medlemsnummer, String navn, String foedselsdato, String telefon, String email) {
         this.medlemsnummer = medlemsnummer;
         this.navn = navn;
-        this.alder = alder;
+        this.foedselsdato = LocalDate.parse(foedselsdato).toString();
         this.telefon = telefon;
         this.email = email;
     }
@@ -40,8 +43,16 @@ public abstract class Medlem {
     }
 
     public int getAlder() {
-        return alder;
+        return Period.between(LocalDate.parse(foedselsdato), LocalDate.now()).getYears();
     }
+
+
+    public String getFoedselsdato(){
+        return foedselsdato;
+    }
+
+    public void setFoedselsdato(String fødseldato){
+        this.foedselsdato = foedselsdato;}
 
     public String getTelefon() {
         return telefon;
@@ -56,10 +67,6 @@ public abstract class Medlem {
     }
     public void setNavn(String navn) {
         this.navn = navn;
-    }
-
-    public void setAlder(int alder) {
-        this.alder = alder;
     }
 
     public void setTelefon(String telefon) {
@@ -77,10 +84,6 @@ public abstract class Medlem {
         return false;
     }
 
-    public String toString(){
-        return "Medlemsnummer: " + ", " + medlemsnummer + ", " +"Navn: " + navn + ", " + "Alder: " + alder + ", " + "Telefon: " + telefon + ", " + "Email: " + email;
-    }
-
     public boolean erJunior(){
         if(getAlder() < 18){
             return true;
@@ -95,4 +98,9 @@ public abstract class Medlem {
     public boolean erIRestance(){
         return !harBetalt();
     }
+
+    public String toString(){
+        return "Medlemsnummer: " + ", " + medlemsnummer + ", " +"Navn: " + navn + ", " + "Fødselsdato: " + foedselsdato + ", " + "Telefon: " + telefon + ", " + "Email: " + email;
+    }
+
 }

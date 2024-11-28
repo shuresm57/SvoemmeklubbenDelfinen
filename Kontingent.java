@@ -10,36 +10,46 @@ public class Kontingent {
     private List<Medlem> medlemmer = new ArrayList<Medlem>();
     private Medlem medlem;
 
+    public Kontingent() {
+        pp.loadMedlemmerFromFile();
+        for(Medlem medlem1 : medlemmer) {
+            medlemmer.add(medlem1);
+        }
+    }
+
     public List<Medlem> getMedlemmer() {
         return medlemmer;
     }
 
     public double beregnKontingent() {
+        double kontingent = 0;
         for (Medlem medlem : medlemmer) {
-
-            if (medlem instanceof PassivtMedlem) {
-                return PASSIVT_KONTINGENT;
+            if (medlem instanceof PassivtMedlem)
+            {
+                kontingent = PASSIVT_KONTINGENT;
             } else if (medlem instanceof KonkurrenceSvoemmer && medlem.erJunior() || medlem instanceof Motionist && medlem.erJunior()) {
-                return UNGDOMS_KONTINGENT;
+                kontingent = UNGDOMS_KONTINGENT;
             } else if (medlem instanceof KonkurrenceSvoemmer && medlem.erSenior() || medlem instanceof Motionist && medlem.erSenior()) {
-                return SENIOR_KONTINGENT * SENIOR_RABAT;
-            } else if (medlem instanceof KonkurrenceSvoemmer || medlem instanceof Motionist){
-                return SENIOR_KONTINGENT;
+                kontingent = SENIOR_KONTINGENT * SENIOR_RABAT;
+            } else if (medlem instanceof KonkurrenceSvoemmer || medlem instanceof Motionist) {
+                kontingent = SENIOR_KONTINGENT;
             }
         }
-        return 0;
+        return kontingent;
     }
 
     public double totalKontingent()
     {
         double total = 0.0;
-        for (Medlem medlem : medlemmer) {
-            total += beregnKontingent();
+
+        for(Medlem medlem : medlemmer){
+            medlemmer.add(medlem);
+           total += beregnKontingent();
         }
         return total;
-    }
+        }
 
-    public static List<Medlem> medlemmerIRestance(List<Medlem> medlemmer) {
+    public void medlemmerIRestance() {
         List<Medlem> iRestance = new ArrayList<>();
         for (Medlem medlem : medlemmer) {
             if (medlem.erIRestance()) {
@@ -48,4 +58,5 @@ public class Kontingent {
         }
         return iRestance;
     }
+
 }

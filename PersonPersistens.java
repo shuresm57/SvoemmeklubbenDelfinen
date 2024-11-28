@@ -2,6 +2,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class PersonPersistens {
 
@@ -61,7 +64,7 @@ public class PersonPersistens {
     // Metode til at oprette og gemme et medlem
     public void opretMedlem() {
         Scanner scanner = new Scanner(System.in);
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         String medlemstype = "";
         while (true) {
             System.out.println("Vælg medlemstype (1 = Konkurrencesvømmer, 2 = Motionist, 3 = Passivt medlem): ");
@@ -73,42 +76,6 @@ public class PersonPersistens {
             } else {
                 System.out.println("Ugyldigt valg, prøv igen.");  // Hvis input er ugyldigt, vis en fejlmeddelelse
             }
-        }
-
-        // Generér medlemsnummer baseret på medlemstype
-        String medlemsnummer = genererMedlemsnummer(medlemstype);
-        // Bed brugeren om at indtaste oplysninger for medlemmet
-        System.out.println("Indtast navn: ");
-        String navn = scanner.nextLine();
-
-        System.out.println("Indtast alder: ");
-        int alder = scanner.nextInt();
-        scanner.nextLine();  // Forbruger den sidste linjefeed.
-
-        System.out.println("Indtast telefonnummer: ");
-        String telefon = scanner.nextLine();
-
-        System.out.println("Indtast email: ");
-        String email = scanner.nextLine();
-
-        // Opret medlemmet baseret på medlemstype
-        Medlem medlem = null;
-        if ("1".equalsIgnoreCase(medlemstype)) {
-            medlem = new KonkurrenceSvoemmer(medlemsnummer, navn, alder, telefon, email);
-        } else if ("2".equalsIgnoreCase(medlemstype)) {
-            medlem = new Motionist(medlemsnummer, navn, alder, telefon, email);
-        } else if ("3".equalsIgnoreCase(medlemstype)) {
-            medlem = new PassivtMedlem(medlemsnummer, navn, alder, telefon, email);
-        }
-
-        // Tilføj medlemmet til listen
-        if (medlem != null) {
-            medlemmer.add(medlem);
-            medlemsNumre.add(medlemsnummer);
-            saveMedlemToFile();
-            System.out.println("Medlem oprettet: " + medlem.getMedlemsnummer());
-        } else {
-            System.out.println("Ugyldig medlemstype valgt.");
         }
     }
 
@@ -135,7 +102,7 @@ public class PersonPersistens {
                     String medlemsnummer = medlemsData[0];
                     String medlemstype = medlemsData[1];
                     String navn = medlemsData[2];
-                    int alder = Integer.parseInt(medlemsData[3]);
+                    String foedselsdato = medlemsData[3];
                     String telefon = medlemsData[4];
                     String email = medlemsData[5];
 
@@ -145,13 +112,12 @@ public class PersonPersistens {
                     } else if ("Motionist".equalsIgnoreCase(medlemstype)) {
                         medlem = new Motionist(medlemsnummer, navn, alder, telefon, email);
                     } else if ("PassivtMedlem".equalsIgnoreCase(medlemstype)) {
-                        medlem = new PassivtMedlem(medlemsnummer, navn, alder, telefon, email);
-                    }
-
-                    if (medlem != null) {
+                        medlem = new PassivtMedlem(medlemsnummer, navn, foedselsdato, telefon, email);
                         medlemmer.add(medlem);
                         medlemsNumre.add(medlemsnummer);
                     }
+
+
                 }
             }
         } catch (IOException e) {
@@ -219,9 +185,8 @@ public class PersonPersistens {
         while (true) {
             System.out.println("Vælg hvad du vil opdatere: ");
             System.out.println("1. Navn");
-            System.out.println("2. Alder");
-            System.out.println("3. Telefon");
-            System.out.println("4. Email");
+            System.out.println("2. Telefon");
+            System.out.println("3. Email");
             System.out.println("0. Tilbage");
 
             int valg = scanner.nextInt();
@@ -235,16 +200,11 @@ public class PersonPersistens {
                     medlemToUpdate.setNavn(nytNavn);
                     break;
                 case 2:
-                    System.out.println("Indtast ny alder: ");
-                    int nyAlder = scanner.nextInt();
-                    medlemToUpdate.setAlder(nyAlder);
-                    break;
-                case 3:
                     System.out.println("Indtast nyt telefonnummer: ");
                     String nyTelefon = scanner.nextLine();
                     medlemToUpdate.setTelefon(nyTelefon);
                     break;
-                case 4:
+                case 3:
                     System.out.println("Indtast ny email: ");
                     String nyEmail = scanner.nextLine();
                     medlemToUpdate.setEmail(nyEmail);

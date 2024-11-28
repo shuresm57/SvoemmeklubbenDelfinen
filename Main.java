@@ -1,8 +1,25 @@
-/* import java.util.Scanner;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
+
+
+
+        Kontingent kk = new Kontingent();
+        PersonPersistens pp = new PersonPersistens();
+        pp.loadMedlemmerFromFile();
+
+        kk.beregnKontingent();
+        kk.totalKontingent();
+        System.out.println(kk.beregnKontingent());
+        System.out.println(kk.totalKontingent());
+
+        pp.visMedlemmer();
+
+
+
+        /*
         // Opret objekter
         Kontingent kontingent = new Kontingent();
         Medlem medlem = null;
@@ -97,9 +114,9 @@ public class Main {
             }
         }
 
-        scanner.close();
+        scanner.close();*/
     }
-} */
+}
 
 
 

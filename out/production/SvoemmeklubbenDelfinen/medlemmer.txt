@@ -1,4 +1,4 @@
-KS001,KonkurrenceSvoemmer,Markus,39,70100100,markus420@trump4pres.com
-KS002,KonkurrenceSvoemmer,Markusse,21,200000000000000000,msmsm/jsksk
-KS003,KonkurrenceSvoemmer,Valdefar,82,2222222,vsoresen
-MN001,Motionist,Jens,22,222222,nnn"kk
+KS001,KonkurrenceSvoemmer,VALDE,1995-01-04,25148570,valdefuck@fuck.dk
+KS002,KonkurrenceSvoemmer,Valde,1900-01-04,72100100,valdefar@fuckig.dk
+KS003,KonkurrenceSvoemmer,valde,1900-01-04,180241,fuk@fuck.fuck
+PM001,PassivtMedlem,valde,1900-01-04,1294890124,passiv@fuckdig.dk
