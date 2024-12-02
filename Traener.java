@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Traener {
 
@@ -9,12 +10,19 @@ public class Traener {
     private String telefon;
     private String email;
     private Hold hold;
-    private Traener traener;
     private List<Traener> traenerListe = new ArrayList<>();
     private static final String FILE_PATH = "traenere.txt";
 
+    public static void main(String[] args) {
 
-    public Traener(String navn, int alder, String telefon, String email){
+
+    }
+
+    public Traener() {
+
+    }
+
+    public Traener(String navn, int alder, String telefon, String email) {
         this.navn = navn;
         this.alder = alder;
         this.telefon = telefon;
@@ -27,7 +35,6 @@ public class Traener {
 
     public List<Traener> getTraenerListe() {
         return traenerListe;
-
     }
 
     public String getNavn() {
@@ -63,9 +70,32 @@ public class Traener {
     }
 
 
+    public void opretTraener() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Indtast navn på Træner der skal oprettes i systemet: ");
+            String navn = scanner.nextLine();
+
+            System.out.println("Indtast " + navn + "'s alder:");
+            int alder = Integer.parseInt(scanner.nextLine());
+
+            System.out.println("Indtast telefon");
+            String telefon = scanner.nextLine();
+
+            System.out.println("Indtast email");
+            String email = scanner.nextLine();
+
+            Traener traener = new Traener(navn, alder, telefon, email);
+            addTraener(traener);
+            writeToFile();
+            System.out.println("Træner oprettet: " + traener.getNavn());
+            break;
+                        }
+        }
+
 
     public void writeToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
             for (Traener traener : traenerListe) {
                 writer.write(traener.navn + "," + traener.alder + "," + traener.telefon + "," + traener.email);
                 writer.newLine();
@@ -83,7 +113,7 @@ public class Traener {
                 String[] data = line.split(",");
                 if (data.length == 4) {
                     Traener traener = new Traener(data[0], Integer.parseInt(data[1]), data[2], data[3]);
-                    addTraener(traener);
+                    traenerListe.add(traener);
                 }
             }
             System.out.println("Trænere indlæst fra fil.");

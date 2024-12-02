@@ -119,7 +119,7 @@ public class PersonPersistens {
 
     // Metode til at gemme medlemmer til fil
     public void saveMedlemToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
             for (Medlem medlem : medlemmer) {
                 writer.write(medlem.getMedlemsnummer() + "," + medlem.getMedlemstype() + "," + medlem.getNavn() + "," + medlem.getFoedselsdato() + "," + medlem.getTelefon() + "," + medlem.getEmail());
                 writer.newLine();
@@ -169,42 +169,121 @@ public class PersonPersistens {
         }
     }
 
-    // Metode til at køre programmet
-    public void run() {
+    private String login() {
         Scanner scanner = new Scanner(System.in);
 
-        // Læs medlemmer fra fil ved programstart
-        loadMedlemmerFromFile();
-
-        // Giv brugeren mulighed for at oprette et medlem
         while (true) {
-            System.out.println("\n1. Opret medlem");
-            System.out.println("2. Gem medlemmer til fil");
-            System.out.println("3. Ændre medlemsoplysninger");
-            System.out.println("4. Vis medlemmer");
+            System.out.println("Vælg din rolle: ");
+            System.out.println("1. Formand");
+            System.out.println("2. Træner");
+            System.out.println("3. Kasserer");
             System.out.println("0. Afslut");
-            System.out.print("Vælg en mulighed: ");
-            int option = scanner.nextInt();
-            scanner.nextLine();  // Forbruger den sidste linjefeed.
 
-            if (option == 1) {
-                opretMedlem();
-            } else if (option == 2) {
-                saveMedlemToFile();
-            } else if (option == 3) {
-                opdaterMedlem();
-            } else if (option == 4) {
-                visMedlemmer();
-            } else if (option == 0) {
-                break;
+            System.out.print("Vælg en mulighed: ");
+            int valg = scanner.nextInt();
+            scanner.nextLine(); // Forbruger linjeskiftet
+
+            if (valg == 1) {
+                return "formand";
+            } else if (valg == 2) {
+                return "træner";
+            } else if (valg == 3) {
+                return "kasserer";
+            } else if (valg == 0) {
+                System.out.println("Programmet afsluttes.");
+                System.exit(0); // Afslut programmet
             } else {
-                System.out.println("Ugyldigt valg.");
+                System.out.println("Ugyldigt valg. Prøv igen.");
             }
         }
-
-        // Luk scanner for at undgå ressource lækage
     }
+    public void run() {
+        PersonPersistens persistens = new PersonPersistens();
+        persistens.loadMedlemmerFromFile();
+        Scanner scanner = new Scanner(System.in);
 
+        // Login-processen
+        String rolle = login();
+
+        // Hovedmenu baseret på rolle
+        while (true) {
+            System.out.println("\nVelkommen, " + rolle + "!");
+            if ("formand".equalsIgnoreCase(rolle)) {
+                System.out.println("\n1. Opret medlem");
+                System.out.println("2. Gem medlemmer til fil");
+                System.out.println("3. Ændre medlemsoplysninger");
+                System.out.println("4. Vis medlemmer");
+                System.out.println("0. Afslut");
+            } else if ("træner".equalsIgnoreCase(rolle)) {
+                System.out.println("\n1. Vis medlemmer");
+                System.out.println("2. Oret hold");
+                System.out.println("3. tilføj deltager til hold");
+                System.out.println("4. Fjern hold");
+                System.out.println("5. Tilføj træningsresultater");
+                System.out.println("6. Vis træningsresultater");
+                System.out.println("0. Afslut");
+            } else if ("kasserer".equalsIgnoreCase(rolle)) {
+                System.out.println("\n1. Vis medlemmer");
+                System.out.println("2. Opdater betalingsstatus");
+                System.out.println("3. Vis betalingsoversigt");
+                System.out.println("0. Afslut");
+            }
+
+            System.out.print("Vælg en mulighed: ");
+            int option = scanner.nextInt();
+            scanner.nextLine(); // Forbruger linjeskiftet
+
+            // Håndter muligheder baseret på rolle med if-else
+            if ("formand".equalsIgnoreCase(rolle)) {
+                if (option == 1) {
+                    opretMedlem();
+                } else if (option == 2) {
+                    saveMedlemToFile();
+                } else if (option == 3) {
+                    opdaterMedlem();
+                } else if (option == 4) {
+                    visMedlemmer();
+                } else if (option == 0) {
+                    System.out.println("Programmet afsluttes.");
+                    break;
+                } else {
+                    System.out.println("Ugyldigt valg.");
+                }
+            } else if ("træner".equalsIgnoreCase(rolle)) {
+                if (option == 1) {
+                    visMedlemmer();
+                } else if (option == 2) {
+                    System.out.println("Opret hold (ikke implementeret endnu).");
+                } else if (option == 3) {
+                    System.out.println("Tilføj deltager til hold (ikke implementeret endnu).");
+                }else if (option == 4) {
+                    System.out.println("Fjern hold (ikke implementeret endnu).");
+                }else if (option == 5) {
+                    System.out.println("Tilføj træningsresultater (ikke implementeret endnu).");
+                }else if (option == 6) {
+                    System.out.println("Vis træningsresultater (ikke implementeret endnu).");
+                } else if (option == 0) {
+                    System.out.println("Programmet afsluttes.");
+                    break;
+                } else {
+                    System.out.println("Ugyldigt valg.");
+                }
+            } else if ("kasserer".equalsIgnoreCase(rolle)) {
+                if (option == 1) {
+                    visMedlemmer();
+                } else if (option == 2) {
+                    System.out.println("Opdater betalingsstatus (ikke implementeret endnu).");
+                } else if (option == 3) {
+                    System.out.println("Vis betalingsoversigt (ikke implementeret endnu).");
+                } else if (option == 0) {
+                    System.out.println("Programmet afsluttes.");
+                    break;
+                } else {
+                    System.out.println("Ugyldigt valg.");
+                }
+            }
+        }
+    }
 
     // Metode til at opdatere et medlem
     public void opdaterMedlem() {
@@ -237,34 +316,29 @@ public class PersonPersistens {
             scanner.nextLine();  // Forbruger den sidste linjefeed.
 
 
-            switch (valg) {
-                case 1:
-                    System.out.println("Indtast nyt navn: ");
-                    String nytNavn = scanner.nextLine();
-                    medlemToUpdate.setNavn(nytNavn);
-                    break;
-                case 2:
-                    System.out.println("Indtast nyt telefonnummer: ");
-                    String nyTelefon = scanner.nextLine();
-                    medlemToUpdate.setTelefon(nyTelefon);
-                    break;
-                case 3:
-                    System.out.println("Indtast ny email: ");
-                    String nyEmail = scanner.nextLine();
-                    medlemToUpdate.setEmail(nyEmail);
-                    break;
-                case 0:
-                    System.out.println("Tilbage til hovedmenu.");
-                    return;
-                default:
-                    System.out.println("Ugyldigt valg.");
-                    break;
+            if (valg == 1) {
+                System.out.println("Indtast nyt navn: ");
+                String nytNavn = scanner.nextLine();
+                medlemToUpdate.setNavn(nytNavn);
+            } else if (valg == 2) {
+                System.out.println("Indtast nyt telefonnummer: ");
+                String nyTelefon = scanner.nextLine();
+                medlemToUpdate.setTelefon(nyTelefon);
+            } else if (valg == 3) {
+                System.out.println("Indtast ny email: ");
+                String nyEmail = scanner.nextLine();
+                medlemToUpdate.setEmail(nyEmail);
+            } else if (valg == 0) {
+                System.out.println("Tilbage til hovedmenu.");
+                return;
+            } else {
+                System.out.println("Ugyldigt valg.");
             }
+
             // Når medlemmet er opdateret, gem de ændrede oplysninger til filen
             saveMedlemToFile();
             System.out.println("Medlemmet er opdateret.");
         }
-
     }
 
 

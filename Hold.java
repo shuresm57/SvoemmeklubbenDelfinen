@@ -1,6 +1,10 @@
 import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Hold {
 
@@ -8,29 +12,52 @@ public class Hold {
     private String ugeDag;
     private int tid;
     private List<KonkurrenceSvoemmer> deltagere = new ArrayList<>();
-    private static List<Hold> holdListe = new ArrayList<>();
+    private List<Hold> holdListe = new ArrayList<>();
     private static final String FILE_PATH = "hold.txt";
     private String holdnavn;
+    private static final int MAX_DELTAGERE_HOLD = 4;
 
+
+
+    public static void main(String[]args){
+            PersonPersistens persistens = new PersonPersistens();
+            Traener t = new Traener();
+            Traener traener = new Traener("Niko", 28, "dasda", "3055699");
+            persistens.loadMedlemmerFromFile();
+
+            //Traener traener = new Traener("Niko", 20, "30569972", "dmoiias@gmail.com");
+            Hold h = new Hold();
+
+       // traener.opretTraener();
+
+       h.opretHold();
+
+            // Tilføj automatisk konkurrencesvømmere til hold
+            //h.tilfoejMedlemTilHoldFraArrayList(persistens.getMedlemmerafKlassen());
+
+            //h.getHoldListe(); // Udskriv holdlisten for kontrol
+
+    }
+
+    public Hold(){
+        this.traener = new Traener();
+    }
 
     public Hold(String holdnavn, Traener traener, String ugeDag, int tid) {
         this.holdnavn = holdnavn;
         this.traener = traener;
         this.ugeDag = ugeDag;
         this.tid = tid;
-        holdListe.add(this);
+        holdListe.add(this); // Fjern dette, hvis det ikke er nødvendigt
     }
 
-    public static List<Hold> getHoldListe() {
+    public List<Hold> getHoldListe() {
+        System.out.println(holdListe);
         return holdListe;
     }
 
     public String getHoldnavn() {
         return holdnavn;
-    }
-
-    public void tilfoejTilHold(KonkurrenceSvoemmer svoemmer) {
-        deltagere.add(svoemmer);
     }
 
     public List<KonkurrenceSvoemmer> getDeltagere() {
@@ -57,55 +84,127 @@ public class Hold {
         this.traener = traener;
     }
 
-    public void tilfoejTilHold(Medlem medlem) {
-        if (medlem instanceof KonkurrenceSvoemmer) {
-            KonkurrenceSvoemmer svoemmer = (KonkurrenceSvoemmer) medlem;
-            if (!deltagere.contains(svoemmer)) {
-                deltagere.add(svoemmer);
-                System.out.println(svoemmer.getNavn() + " er tilføjet til holdet " + holdnavn);
-                saveToFile();
+
+    public void tilfoejMedlemTilHoldFraArrayList(List<Medlem> medlemsListe) {
+        for (Medlem medlem : medlemsListe) {
+            if (medlem instanceof KonkurrenceSvoemmer) {
+                KonkurrenceSvoemmer svoemmer = (KonkurrenceSvoemmer) medlem;
+
+                boolean added = false; // Indikator for, om svømmeren er tilføjet
+                for (Hold hold : holdListe) {
+                    if (hold.deltagere.size() < MAX_DELTAGERE_HOLD && !hold.deltagere.contains(svoemmer)) {
+                        hold.deltagere.add(svoemmer);
+                        System.out.println(svoemmer.getNavn() + " er tilføjet til holdet " + hold.holdnavn);
+                        added = true;
+                        break;
+                    }
+                }
+
+                // Hvis ingen eksisterende hold har plads, opret et nyt hold
+                if (!added) {
+                    String nytHoldNavn = "Hold " + (holdListe.size() + 1);
+                    Hold nytHold = new Hold(nytHoldNavn, traener, ugeDag, tid); // Skab nyt hold
+                    holdListe.add(nytHold); // Tilføj det nye hold til listen
+                    System.out.println("Nyt hold oprettet: " + nytHoldNavn);
+                    nytHold.deltagere.add(svoemmer); // Tilføj svømmeren til det nye hold
+                    System.out.println(svoemmer.getNavn() + " er tilføjet til det nye hold " + nytHoldNavn);
+                }
             } else {
-                System.out.println(svoemmer.getNavn() + " er allerede tilknyttet holdet " + holdnavn);
+                System.out.println("Medlemmet " + medlem.getNavn() + " er ikke en konkurrencesvømmer og blev ikke tilføjet.");
             }
-        } else {
-            System.out.println("Kun konkurrencesvømmere kan tilføjes til et hold."); //Kun KS kan være på hold, pls virk
+        }
+
+        // Gem ændringerne til fil
+        saveToFile();
+    }
+
+
+    public void opretHold() {
+        Scanner scanner = new Scanner(System.in);
+
+        traener.loadFromFile(); // Sørger for, at trænerlisten er initialiseret korrekt
+
+        while (true) {
+            System.out.println("Indtast navn på hold der skal oprettes: ");
+            String navn = scanner.nextLine();
+
+            // Print eksisterende trænere
+            System.out.println("Træner der skal tilføjes til hold:");
+            for (int i = 0; i < traener.getTraenerListe().size(); i++) {
+                System.out.println((i + 1) + ". " + traener.getTraenerListe().get(i).getNavn());
+            }
+
+            // Vælg træner
+            System.out.println("Vælg træner (indtast nummer): ");
+            int traenerValg = Integer.parseInt(scanner.nextLine());
+            Traener valgtTraener = traener.getTraenerListe().get(traenerValg - 1);
+
+            System.out.println("Indtast ugedag, hvor holdet skal træne: ");
+            String ugeDag = scanner.nextLine();
+
+            System.out.println("Indtast tidspunkt holdet skal træne: ");
+            int tid = Integer.parseInt(scanner.nextLine());
+
+            // Brug den valgte træner
+            Hold nytHold = new Hold(navn, valgtTraener, ugeDag, tid);
+
+            // Tilføj hold til listen
+            holdListe.add(nytHold);
+            saveToFile();
+            System.out.println("Hold oprettet: " + nytHold.getHoldnavn());
+            break;
         }
     }
 
     // Gem hele listen til fil
     public void saveToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
             for (Hold hold : holdListe) {
                 String traenerNavn = (hold.traener != null) ? hold.traener.getNavn() : "Ingen træner";
                 writer.write(hold.holdnavn + "," + traenerNavn + "," + hold.ugeDag + "," + hold.tid);
                 writer.newLine();
+                List<String> eksisterendeNavne = new ArrayList<>();
                 for (KonkurrenceSvoemmer deltagere : hold.deltagere) {
-                    writer.write(deltagere.getNavn());
-                    writer.newLine();
+                    if(!eksisterendeNavne.contains(deltagere.getNavn())){
+                        writer.newLine();
+                        writer.write(deltagere.getNavn());
+                        eksisterendeNavne.add(deltagere.getNavn());
+                    }
                 }
             }
             System.out.println("Hold gemt til fil.");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.out.println("Fejl ved skrivning af hold til fil: " + e.getMessage());
         }
     }
 
-    // Indlæs hold fra fil
     public void loadFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
             Hold currentHold = null;
+
+            // Sørg for, at traener er initialiseret korrekt
+            if (traener == null) {
+                traener = new Traener();
+                traener.loadFromFile(); // Indlæs trænere
+            }
+
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length == 4) {
-                    Traener traener = null;
+                    Traener matchedTraener = null;
+
+                    // Find træneren i trænerlisten
                     for (Traener t : traener.getTraenerListe()) {
                         if (t.getNavn().equals(data[1])) {
-                            traener = t;
+                            matchedTraener = t;
                             break;
                         }
                     }
-                    currentHold = new Hold(data[0], traener, data[2], Integer.parseInt(data[3]));
+
+                    // Opret nyt hold med matched træner
+                    currentHold = new Hold(data[0], matchedTraener, data[2], Integer.parseInt(data[3]));
                     holdListe.add(currentHold);
                 } else if (currentHold != null) {
                     // Tilføj deltagere til holdet
@@ -118,6 +217,8 @@ public class Hold {
             System.out.println("Fejl ved indlæsning af hold fra fil: " + e.getMessage());
         }
     }
+
+
 
     // Opdater hold og skriv til fil
     public void opdaterHold(String holdnavn, String nyUgeDag, int nyTid, Traener nyTraener) {

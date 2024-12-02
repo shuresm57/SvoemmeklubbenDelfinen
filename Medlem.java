@@ -62,9 +62,6 @@ public abstract class Medlem {
         return email;
     }
 
-    public void setHold(Hold hold) {
-        this.hold = hold;
-    }
     public void setNavn(String navn) {
         this.navn = navn;
     }
