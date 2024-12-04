@@ -1,10 +1,6 @@
-import java.util.Scanner;
-
 public class Main {
 
     public static void main(String[] args) {
-
-
 
         Kontingent kk = new Kontingent();
         PersonPersistens pp = new PersonPersistens();
@@ -17,15 +13,12 @@ public class Main {
 
         pp.visMedlemmer();
 
-
-
         /*
         // Opret objekter
         Kontingent kontingent = new Kontingent();
         Medlem medlem = null;
         Hold hold = null;
         Traener traener = null;
-
 
         Scanner scanner = new Scanner(System.in);
         boolean runProgram = true;
@@ -117,8 +110,3 @@ public class Main {
         scanner.close();*/
     }
 }
-
-
-
-
-

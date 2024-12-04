@@ -8,7 +8,6 @@ import java.time.format.DateTimeParseException;
 
 public class PersonPersistens {
 
-
     private static final String FILE_PATH = "medlemmer.txt";  // Filstien til at gemme og læse medlemmer fra.
     private List<Medlem> medlemmer = new ArrayList<>();// Liste til at gemme medlemmer.
     private List<String> medlemsNumre = new ArrayList<>();

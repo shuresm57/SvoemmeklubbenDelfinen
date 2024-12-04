@@ -84,41 +84,6 @@ public class Hold {
         this.traener = traener;
     }
 
-
-    public void tilfoejMedlemTilHoldFraArrayList(List<Medlem> medlemsListe) {
-        for (Medlem medlem : medlemsListe) {
-            if (medlem instanceof KonkurrenceSvoemmer) {
-                KonkurrenceSvoemmer svoemmer = (KonkurrenceSvoemmer) medlem;
-
-                boolean added = false; // Indikator for, om svømmeren er tilføjet
-                for (Hold hold : holdListe) {
-                    if (hold.deltagere.size() < MAX_DELTAGERE_HOLD && !hold.deltagere.contains(svoemmer)) {
-                        hold.deltagere.add(svoemmer);
-                        System.out.println(svoemmer.getNavn() + " er tilføjet til holdet " + hold.holdnavn);
-                        added = true;
-                        break;
-                    }
-                }
-
-                // Hvis ingen eksisterende hold har plads, opret et nyt hold
-                if (!added) {
-                    String nytHoldNavn = "Hold " + (holdListe.size() + 1);
-                    Hold nytHold = new Hold(nytHoldNavn, traener, ugeDag, tid); // Skab nyt hold
-                    holdListe.add(nytHold); // Tilføj det nye hold til listen
-                    System.out.println("Nyt hold oprettet: " + nytHoldNavn);
-                    nytHold.deltagere.add(svoemmer); // Tilføj svømmeren til det nye hold
-                    System.out.println(svoemmer.getNavn() + " er tilføjet til det nye hold " + nytHoldNavn);
-                }
-            } else {
-                System.out.println("Medlemmet " + medlem.getNavn() + " er ikke en konkurrencesvømmer og blev ikke tilføjet.");
-            }
-        }
-
-        // Gem ændringerne til fil
-        saveToFile();
-    }
-
-
     public void opretHold() {
         Scanner scanner = new Scanner(System.in);
 

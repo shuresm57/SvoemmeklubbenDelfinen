@@ -36,3 +36,4 @@ KS030,KonkurrenceSvoemmer,Luna,2000-06-24,34567811,luna@eksempel.dk
 KS031,KonkurrenceSvoemmer,Emil,1995-08-30,45678912,emil@eksempel.dk
 KS032,KonkurrenceSvoemmer,Sarah,1996-03-19,56789013,sarah@eksempel.dk
 KS033,KonkurrenceSvoemmer,Alexander,2001-09-17,67890114,alexander@eksempel.dk
+KS034,Motionist,Nikodem Kondratowitchz kæreste,2001-09-17,32313133,niko@niko.niko
