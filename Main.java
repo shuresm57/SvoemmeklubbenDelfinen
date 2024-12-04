@@ -6,9 +6,7 @@ public class Main {
         PersonPersistens pp = new PersonPersistens();
         pp.loadMedlemmerFromFile();
 
-        kk.beregnKontingent();
-        kk.totalKontingent();
-        System.out.println(kk.beregnKontingent());
+
         System.out.println(kk.totalKontingent());
 
         pp.visMedlemmer();

@@ -13,11 +13,6 @@ public class Traener {
     private List<Traener> traenerListe = new ArrayList<>();
     private static final String FILE_PATH = "traenere.txt";
 
-    public static void main(String[] args) {
-
-
-    }
-
     public Traener() {
 
     }
@@ -69,7 +64,6 @@ public class Traener {
         this.email = email;
     }
 
-
     public void opretTraener() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -92,7 +86,6 @@ public class Traener {
             break;
                         }
         }
-
 
     public void writeToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {

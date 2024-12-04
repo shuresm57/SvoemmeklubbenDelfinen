@@ -1,15 +1,17 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 public abstract class Medlem {
 
     protected String medlemsnummer;
     protected String navn;
-    protected int alder;
     protected String foedselsdato;
-    protected boolean erPassiv;
+    protected LocalDateTime medlemsdato;
+    protected boolean harBetaltKontingent = true;
     protected String telefon;
     protected String email;
     protected List<Medlem> medlemmer = new ArrayList<>();
@@ -19,12 +21,22 @@ public abstract class Medlem {
         this.medlemmer = new ArrayList<>();
     }
 
+    public Medlem(String medlemsnummer, String navn, String foedselsdato, String telefon, String email, String medlemsdato) {
+        this.medlemsnummer = medlemsnummer;
+        this.navn = navn;
+        this.foedselsdato = LocalDate.parse(foedselsdato).toString();
+        this.telefon = telefon;
+        this.email = email;
+        this.medlemsdato = LocalDateTime.now();
+    }
+
     public Medlem(String medlemsnummer, String navn, String foedselsdato, String telefon, String email) {
         this.medlemsnummer = medlemsnummer;
         this.navn = navn;
         this.foedselsdato = LocalDate.parse(foedselsdato).toString();
         this.telefon = telefon;
         this.email = email;
+        medlemsdato = LocalDateTime.now();
     }
 
     public abstract String getMedlemstype();
@@ -33,7 +45,6 @@ public abstract class Medlem {
     public void setMedlemsnummer(String medlemsnummer) {
         this.medlemsnummer = medlemsnummer;
     }
-
     public String getMedlemsnummer() {
         return medlemsnummer;
     }
@@ -46,6 +57,10 @@ public abstract class Medlem {
         return Period.between(LocalDate.parse(foedselsdato), LocalDate.now()).getYears();
     }
 
+    public String getMedlemsdato(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        return medlemsdato.format(formatter);
+    }
 
     public String getFoedselsdato(){
         return foedselsdato;
@@ -89,11 +104,11 @@ public abstract class Medlem {
     }
 
     public boolean harBetalt(){
-        return true;
+        return harBetaltKontingent;
     }
 
-    public boolean erIRestance(){
-        return !harBetalt();
+    public void harBetalt(boolean harBetaltKontingent){
+        this.harBetaltKontingent = harBetaltKontingent;
     }
 
     public String toString(){

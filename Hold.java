@@ -17,8 +17,6 @@ public class Hold {
     private String holdnavn;
     private static final int MAX_DELTAGERE_HOLD = 4;
 
-
-
     public static void main(String[]args){
             PersonPersistens persistens = new PersonPersistens();
             Traener t = new Traener();
@@ -28,9 +26,9 @@ public class Hold {
             //Traener traener = new Traener("Niko", 20, "30569972", "dmoiias@gmail.com");
             Hold h = new Hold();
 
-       // traener.opretTraener();
+            // traener.opretTraener();
 
-       h.opretHold();
+            h.opretHold();
 
             // Tilføj automatisk konkurrencesvømmere til hold
             //h.tilfoejMedlemTilHoldFraArrayList(persistens.getMedlemmerafKlassen());
@@ -173,7 +171,7 @@ public class Hold {
                     holdListe.add(currentHold);
                 } else if (currentHold != null) {
                     // Tilføj deltagere til holdet
-                    KonkurrenceSvoemmer deltagere = new KonkurrenceSvoemmer(line, "", "", "", "");
+                    KonkurrenceSvoemmer deltagere = new KonkurrenceSvoemmer(line, "", "", "", "", "");
                     currentHold.deltagere.add(deltagere);
                 }
             }

@@ -93,3 +93,5 @@ Emil
 SarahHold 10,Ingen træner,null,0
 
 Alexander
+
+Valdemars hold,Valdemar,Tirsdag,1230
