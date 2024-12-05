@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 import java.time.*;
 import java.time.format.*;
-
+//commit 5/12
 public class PersonPersistens {
 
     private static final String FILE_PATH = "medlemmer.txt";  // Filstien til at gemme og læse medlemmer fra.

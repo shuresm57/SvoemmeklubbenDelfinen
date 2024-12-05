@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
+//commit 5/12
 public class KonkurrenceSvoemmer extends Medlem {
     private List<Resultat> resultater = new ArrayList<>();
 

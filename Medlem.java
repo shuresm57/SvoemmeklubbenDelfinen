@@ -39,7 +39,7 @@ public abstract class Medlem {
         this.email = email;
         medlemsdato = LocalDateTime.now();
     }
-
+    //commit 5/12
     public abstract String getMedlemstype();
 
 

@@ -3,6 +3,8 @@ import java.io.*;
 import java.io.IOException;
 import java.util.*;
 
+//commit 5/12
+
 public class Kontingent {
 
     private             static final double         UNGDOMS_KONTINGENT      = 1000.0;

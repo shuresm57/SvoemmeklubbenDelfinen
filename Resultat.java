@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-
+//commit 5/12
 public class Resultat {
     private String disciplin;
     private double tid;
