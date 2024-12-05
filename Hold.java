@@ -17,27 +17,27 @@ public class Hold {
     private String holdnavn;
     private static final int MAX_DELTAGERE_HOLD = 4;
 
-    public static void main(String[]args){
-            PersonPersistens persistens = new PersonPersistens();
-            Traener t = new Traener();
-            Traener traener = new Traener("Niko", 28, "dasda", "3055699");
-            persistens.loadMedlemmerFromFile();
+    public static void main(String[] args) {
+        PersonPersistens persistens = new PersonPersistens();
+        Traener t = new Traener();
+        Traener traener = new Traener("Niko", 28, "dasda", "3055699");
+        persistens.loadMedlemmerFromFile();
 
-            //Traener traener = new Traener("Niko", 20, "30569972", "dmoiias@gmail.com");
-            Hold h = new Hold();
+        //Traener traener = new Traener("Niko", 20, "30569972", "dmoiias@gmail.com");
+        Hold h = new Hold();
 
-            // traener.opretTraener();
+        //traener.opretTraener();
 
-            h.opretHold();
+        h.opretHold();
 
-            // Tilføj automatisk konkurrencesvømmere til hold
-            //h.tilfoejMedlemTilHoldFraArrayList(persistens.getMedlemmerafKlassen());
+        // Tilføj automatisk konkurrencesvømmere til hold
+        //h.tilfoejMedlemTilHoldFraArrayList(persistens.getMedlemmerafKlassen());
 
-            //h.getHoldListe(); // Udskriv holdlisten for kontrol
+        //h.getHoldListe(); // Udskriv holdlisten for kontrol
 
     }
 
-    public Hold(){
+    public Hold() {
         this.traener = new Traener();
     }
 
@@ -87,137 +87,167 @@ public class Hold {
 
         traener.loadFromFile(); // Sørger for, at trænerlisten er initialiseret korrekt
 
-        while (true) {
-            System.out.println("Indtast navn på hold der skal oprettes: ");
-            String navn = scanner.nextLine();
+        System.out.println("Indtast navn på hold der skal oprettes: ");
+        String navn = scanner.nextLine();
 
-            // Print eksisterende trænere
-            System.out.println("Træner der skal tilføjes til hold:");
-            for (int i = 0; i < traener.getTraenerListe().size(); i++) {
-                System.out.println((i + 1) + ". " + traener.getTraenerListe().get(i).getNavn());
-            }
-
-            // Vælg træner
-            System.out.println("Vælg træner (indtast nummer): ");
-            int traenerValg = Integer.parseInt(scanner.nextLine());
-            Traener valgtTraener = traener.getTraenerListe().get(traenerValg - 1);
-
-            System.out.println("Indtast ugedag, hvor holdet skal træne: ");
-            String ugeDag = scanner.nextLine();
-
-            System.out.println("Indtast tidspunkt holdet skal træne: ");
-            int tid = Integer.parseInt(scanner.nextLine());
-
-            // Brug den valgte træner
-            Hold nytHold = new Hold(navn, valgtTraener, ugeDag, tid);
-
-            // Tilføj hold til listen
-            holdListe.add(nytHold);
-            saveToFile();
-            System.out.println("Hold oprettet: " + nytHold.getHoldnavn());
-            break;
+        // Print eksisterende trænere
+        System.out.println("Træner der skal tilføjes til hold:");
+        for (int i = 0; i < traener.getTraenerListe().size(); i++) {
+            System.out.println((i + 1) + ". " + traener.getTraenerListe().get(i).getNavn());
         }
-    }
 
-    // Gem hele listen til fil
-    public void saveToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            for (Hold hold : holdListe) {
-                String traenerNavn = (hold.traener != null) ? hold.traener.getNavn() : "Ingen træner";
-                writer.write(hold.holdnavn + "," + traenerNavn + "," + hold.ugeDag + "," + hold.tid);
-                writer.newLine();
-                List<String> eksisterendeNavne = new ArrayList<>();
-                for (KonkurrenceSvoemmer deltagere : hold.deltagere) {
-                    if(!eksisterendeNavne.contains(deltagere.getNavn())){
-                        writer.newLine();
-                        writer.write(deltagere.getNavn());
-                        eksisterendeNavne.add(deltagere.getNavn());
-                    }
+        // Vælg træner
+        System.out.println("Vælg træner (indtast nummer): ");
+        int traenerValg = Integer.parseInt(scanner.nextLine());
+        Traener valgtTraener = traener.getTraenerListe().get(traenerValg - 1);
+
+        // Vælg en dag
+        String ugeDag = "";
+        while (ugeDag.isEmpty()) {
+            System.out.println("Vælg en dag: ");
+            System.out.println("1. Mandag");
+            System.out.println("2. Tirsdag");
+            System.out.println("3. Onsdag");
+            System.out.println("4. Torsdag");
+            System.out.println("5. Fredag");
+            System.out.println("6. Lørdag");
+            System.out.println("7. Søndag");
+
+            int valg = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (valg) {
+                case 1: ugeDag = "Mandag"; break;
+                case 2: ugeDag = "Tirsdag"; break;
+                case 3: ugeDag = "Onsdag"; break;
+                case 4: ugeDag = "Torsdag"; break;
+                case 5: ugeDag = "Fredag"; break;
+                case 6: ugeDag = "Lørdag"; break;
+                case 7: ugeDag = "Søndag"; break;
+                default: System.out.println("Ugyldigt valg, prøv igen."); break;
+            }
+        }
+
+        // Angiv tidspunkt for træning
+        int tid = 0;
+        while (tid <= 0) {
+            System.out.println("Angiv tidspunkt holdet skal træne (f.eks. 10 for kl. 10:00): ");
+            try {
+                tid = Integer.parseInt(scanner.nextLine());
+                if (tid <= 0) {
+                    System.out.println("Tidspunkt skal være et positivt tal.");
                 }
+            } catch (NumberFormatException e) {
+                System.out.println("Ugyldigt input, prøv igen.");
             }
-            System.out.println("Hold gemt til fil.");
         }
-        catch (IOException e) {
-            System.out.println("Fejl ved skrivning af hold til fil: " + e.getMessage());
-        }
+
+        // Opret nyt hold og tilføj til listen
+        Hold nytHold = new Hold(navn, valgtTraener, ugeDag, tid);
+        holdListe.add(nytHold);
+        saveToFile();
+        System.out.println("Hold oprettet: " + nytHold.getHoldnavn());
     }
 
-    public void loadFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            Hold currentHold = null;
 
-            // Sørg for, at traener er initialiseret korrekt
-            if (traener == null) {
-                traener = new Traener();
-                traener.loadFromFile(); // Indlæs trænere
-            }
-
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length == 4) {
-                    Traener matchedTraener = null;
-
-                    // Find træneren i trænerlisten
-                    for (Traener t : traener.getTraenerListe()) {
-                        if (t.getNavn().equals(data[1])) {
-                            matchedTraener = t;
-                            break;
+        // Gem hele listen til fil
+        public void saveToFile () {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
+                for (Hold hold : holdListe) {
+                    String traenerNavn = (hold.traener != null) ? hold.traener.getNavn() : "Ingen træner";
+                    writer.write(hold.holdnavn + "," + traenerNavn + "," + hold.ugeDag + "," + hold.tid);
+                    writer.newLine();
+                    List<String> eksisterendeNavne = new ArrayList<>();
+                    for (KonkurrenceSvoemmer deltagere : hold.deltagere) {
+                        if (!eksisterendeNavne.contains(deltagere.getNavn())) {
+                            writer.newLine();
+                            writer.write(deltagere.getNavn());
+                            eksisterendeNavne.add(deltagere.getNavn());
                         }
                     }
+                }
+                System.out.println("Hold gemt til fil.");
+            } catch (IOException e) {
+                System.out.println("Fejl ved skrivning af hold til fil: " + e.getMessage());
+            }
+        }
 
-                    // Opret nyt hold med matched træner
-                    currentHold = new Hold(data[0], matchedTraener, data[2], Integer.parseInt(data[3]));
-                    holdListe.add(currentHold);
-                } else if (currentHold != null) {
-                    // Tilføj deltagere til holdet
-                    KonkurrenceSvoemmer deltagere = new KonkurrenceSvoemmer(line, "", "", "", "", "");
-                    currentHold.deltagere.add(deltagere);
+        public void loadFromFile () {
+            try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+                String line;
+                Hold currentHold = null;
+
+                // Sørg for, at traener er initialiseret korrekt
+                if (traener == null) {
+                    traener = new Traener();
+                    traener.loadFromFile(); // Indlæs trænere
+                }
+
+                while ((line = reader.readLine()) != null) {
+                    String[] data = line.split(",");
+                    if (data.length == 4) {
+                        Traener matchedTraener = null;
+
+                        // Find træneren i trænerlisten
+                        for (Traener t : traener.getTraenerListe()) {
+                            if (t.getNavn().equals(data[1])) {
+                                matchedTraener = t;
+                                break;
+                            }
+                        }
+
+                        // Opret nyt hold med matched træner
+                        currentHold = new Hold(data[0], matchedTraener, data[2], Integer.parseInt(data[3]));
+                        holdListe.add(currentHold);
+                    } else if (currentHold != null) {
+                        // Tilføj deltagere til holdet
+                        KonkurrenceSvoemmer deltagere = new KonkurrenceSvoemmer(line, "", "", "", "", "");
+                        currentHold.deltagere.add(deltagere);
+                    }
+                }
+                System.out.println("Hold indlæst fra fil.");
+            } catch (IOException e) {
+                System.out.println("Fejl ved indlæsning af hold fra fil: " + e.getMessage());
+            }
+        }
+
+
+        // Opdater hold og skriv til fil
+        public void opdaterHold (String holdnavn, String nyUgeDag,int nyTid, Traener nyTraener){
+            for (Hold hold : getHoldListe()) {
+                if (hold.getHoldnavn().equals(holdnavn)) {
+                    hold.setUgeDag(nyUgeDag);
+                    hold.setTid(nyTid);
+                    hold.setTraener(nyTraener);
+                    saveToFile(); // Gem hele listen til fil efter opdatering
+                    System.out.println("Holdet er blevet opdateret og gemt.");
+                    return;
                 }
             }
-            System.out.println("Hold indlæst fra fil.");
-        } catch (IOException e) {
-            System.out.println("Fejl ved indlæsning af hold fra fil: " + e.getMessage());
-        }
-    }
-
-
-
-    // Opdater hold og skriv til fil
-    public void opdaterHold(String holdnavn, String nyUgeDag, int nyTid, Traener nyTraener) {
-        for (Hold hold : getHoldListe()) {
-            if (hold.getHoldnavn().equals(holdnavn)) {
-                hold.setUgeDag(nyUgeDag);
-                hold.setTid(nyTid);
-                hold.setTraener(nyTraener);
-                saveToFile(); // Gem hele listen til fil efter opdatering
-                System.out.println("Holdet er blevet opdateret og gemt.");
-                return;
-            }
-        }
-        System.out.println("Hold med navnet " + holdnavn + " blev ikke fundet.");
-    }
-
-    // Fjern hold og opdater filen
-    public void fjernHold(String holdnavn) {
-        Hold holdToRemove = null;
-        for (Hold hold : holdListe) {
-            if (hold.getHoldnavn().equals(holdnavn)) {
-                holdToRemove = hold;
-                break;
-            }
-        }
-        if (holdToRemove != null) {
-            holdListe.remove(holdToRemove);
-            saveToFile(); // Opdater filen efter fjernelse
-            System.out.println("Hold fjernet og gemt til fil.");
-        } else {
             System.out.println("Hold med navnet " + holdnavn + " blev ikke fundet.");
         }
+
+        // Fjern hold og opdater filen
+        public void fjernHold (String holdnavn){
+            Hold holdToRemove = null;
+            for (Hold hold : holdListe) {
+                if (hold.getHoldnavn().equals(holdnavn)) {
+                    holdToRemove = hold;
+                    break;
+                }
+            }
+            if (holdToRemove != null) {
+                holdListe.remove(holdToRemove);
+                saveToFile(); // Opdater filen efter fjernelse
+                System.out.println("Hold fjernet og gemt til fil.");
+            } else {
+                System.out.println("Hold med navnet " + holdnavn + " blev ikke fundet.");
+            }
+        }
+
+        @Override
+        public String toString () {
+            return "Hold: " + holdnavn + ", Træner: " + (traener != null ? traener.getNavn() : "Ingen træner") + ", Ugedag: " + ugeDag + ", Tid: " + tid + ", Deltagere: " + deltagere;
+        }
     }
 
-    @Override
-    public String toString() {
-        return "Hold: " + holdnavn + ", Træner: " + (traener != null ? traener.getNavn() : "Ingen træner") + ", Ugedag: " + ugeDag + ", Tid: " + tid + ", Deltagere: " + deltagere;
-    }
-}

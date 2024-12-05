@@ -8,10 +8,18 @@ public class PersonPersistens {
     private static final String FILE_PATH = "medlemmer.txt";  // Filstien til at gemme og læse medlemmer fra.
     private List<Medlem> medlemmer = new ArrayList<>();// Liste til at gemme medlemmer.
     private List<String> medlemsNumre = new ArrayList<>();
+    private static final String FORMAND_USERNAME = "formand";
+    private static final String FORMAND_PASSWORD = "1234";
+
+    private static final String TRAENER_USERNAME = "traener";
+    private static final String TRAENER_PASSWORD = "1234";
+
+    private static final String KASSERER_USERNAME = "kasserer";
+    private static final String KASSERER_PASSWORD = "1234";
 
     public static void main(String[] args) {
         PersonPersistens persistens = new PersonPersistens();
-        persistens.run();  // Kør programmet og lad brugeren vælge og oprette medlemmer.
+        persistens.run();// Kør programmet og lad brugeren vælge og oprette medlemmer.
     }
 
     public List<Medlem> getMedlemmer() {
@@ -51,19 +59,24 @@ public class PersonPersistens {
                     }
                 }
             }
-        }catch(IOException e){
-                    System.out.println("Fejl ved læsning af medlemsnumre fra fil: " + e.getMessage());
-                }
+        } catch (IOException e) {
+            System.out.println("Fejl ved læsning af medlemsnumre fra fil: " + e.getMessage());
+        }
         // Sammensæt det nye medlemsnummer og returner det
         return kode + String.format("%03d", naesteNummer);
     }
 
     public void visMedlemmer() {
-        System.out.println("Medlemsliste: ");
-        for (Medlem medlem : medlemmer) {
-            System.out.println(medlem);
+        if (medlemmer.isEmpty()) {
+            System.out.println("Der er ingen medlemmer at vise.");
+        } else {
+            System.out.println("Liste over medlemmer:");
+            for (Medlem medlem : medlemmer) {
+                System.out.println(medlem); // Sørg for, at toString() er implementeret i Medlem-klassen
+            }
         }
     }
+
 
     // Metode til at oprette og gemme et medlem
     public void opretMedlem() {
@@ -118,241 +131,6 @@ public class PersonPersistens {
                 System.out.println("Ugyldig medlemstype valgt.");
             }
             // Tjek om input er gyldigt
-        }
-    }
-
-    // Metode til at gemme medlemmer til fil
-    public void saveMedlemToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            for (Medlem medlem : medlemmer) {
-                writer.write(medlem.getMedlemsnummer() + "," + medlem.getMedlemstype() + "," + medlem.getNavn() +
-                        "," + medlem.getFoedselsdato() + "," + medlem.getTelefon() + "," + medlem.getEmail() + "," + medlem.getMedlemsdato());
-                writer.newLine();
-            }
-
-            //medlemmer.add(medlem);
-            System.out.println("Medlemmerne er blevet gemt.");
-        } catch (IOException e) {
-            System.out.println("Fejl ved gemning til fil: " + e.getMessage());
-        }
-    }
-
-    // Metode til at læse medlemmer fra fil
-    public void loadMedlemmerFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String linje;
-            while ((linje = reader.readLine()) != null) {
-                String[] medlemsData = linje.split(",");
-                if (medlemsData.length == 6) {
-                    String medlemsnummer = medlemsData[0];
-                    String medlemstype = medlemsData[1];
-                    String navn = medlemsData[2];
-                    String foedselsdato = medlemsData[3];
-                    String telefon = medlemsData[4];
-                    String email = medlemsData[5];
-                    String medlemsdato = medlemsData[6];
-
-                    Medlem medlem = null;
-                    if ("KonkurrenceSvoemmer".equalsIgnoreCase(medlemstype)) {
-                        medlem = new KonkurrenceSvoemmer(medlemsnummer, navn, foedselsdato, telefon, email, medlemsdato);
-                        medlemmer.add(medlem);
-                        medlemsNumre.add(medlemsnummer);  // Tilføj medlemsnummeret til medlemsNumre
-                    } else if ("Motionist".equalsIgnoreCase(medlemstype)) {
-                        medlem = new Motionist(medlemsnummer, navn, foedselsdato, telefon, email, medlemsdato);
-                        medlemmer.add(medlem);
-                        medlemsNumre.add(medlemsnummer);  // Tilføj medlemsnummeret til medlemsNumre
-                    } else if ("PassivtMedlem".equalsIgnoreCase(medlemstype)) {
-                        medlem = new PassivtMedlem(medlemsnummer, navn, foedselsdato, telefon, email, medlemsdato);
-                        medlemmer.add(medlem);
-                        medlemsNumre.add(medlemsnummer);  // Tilføj medlemsnummeret til medlemsNumre
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Fejl ved læsning fra fil: " + e.getMessage());
-        }
-    }
-
-    public String login() {
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            System.out.println("Vælg din rolle: ");
-            System.out.println("1. Formand");
-            System.out.println("2. Træner");
-            System.out.println("3. Kasserer");
-            System.out.println("0. Afslut");
-
-            System.out.print("Vælg en mulighed: ");
-            int valg = scanner.nextInt();
-            scanner.nextLine(); // Forbruger linjeskiftet
-
-            if (valg == 1) {
-                return "formand";
-            } else if (valg == 2) {
-                return "træner";
-            } else if (valg == 3) {
-                return "kasserer";
-            } else if (valg == 0) {
-                System.out.println("Programmet afsluttes.");
-                System.exit(0); // Afslut programmet
-            } else {
-                System.out.println("Ugyldigt valg. Prøv igen.");
-            }
-        }
-    }
-
-    public void run() {
-        PersonPersistens persistens = new PersonPersistens();
-        persistens.loadMedlemmerFromFile();
-        Scanner scanner = new Scanner(System.in);
-
-        // Login-processen
-        String rolle = login();
-
-        // Hovedmenu baseret på rolle
-        while (true) {
-            System.out.println("\nVelkommen, " + rolle + "!");
-            if ("formand".equalsIgnoreCase(rolle)) {
-                System.out.println("\n1. Opret medlem");
-                System.out.println("2. Gem medlemmer til fil");
-                System.out.println("3. Ændre medlemsoplysninger");
-                System.out.println("4. Vis medlemmer");
-                System.out.println("5. Slet medlemmer");
-                System.out.println("0. Afslut");
-            } else if ("træner".equalsIgnoreCase(rolle)) {
-                System.out.println("\n1. Vis medlemmer");
-                System.out.println("2. Oret hold");
-                System.out.println("3. tilføj deltager til hold");
-                System.out.println("4. Fjern hold");
-                System.out.println("5. Tilføj træningsresultater");
-                System.out.println("6. Vis træningsresultater");
-                System.out.println("0. Afslut");
-            } else if ("kasserer".equalsIgnoreCase(rolle)) {
-                //System.out.println("\n1. Vis medlemmer");
-                //System.out.println("2. Opdater betalingsstatus");
-                //System.out.println("3. Vis betalingsoversigt");
-                //System.out.println("0. Afslut");
-                runKontingent();
-            }
-
-            System.out.print("Vælg en mulighed: ");
-            int option = scanner.nextInt();
-            scanner.nextLine(); // Forbruger linjeskiftet
-
-            // Håndter muligheder baseret på rolle med if-else
-            if ("formand".equalsIgnoreCase(rolle)) {
-                if (option == 1) {
-                    loadMedlemmerFromFile();
-                    opretMedlem();
-                } else if (option == 2) {
-                    saveMedlemToFile();
-                } else if (option == 3) {
-                    opdaterMedlem();
-                } else if (option == 4) {
-                    visMedlemmer();
-                }  else if (option == 5) {
-                    sletMedlem();
-                } else if (option == 0) {
-                    System.out.println("Programmet afsluttes.");
-                    break;
-                } else {
-                    System.out.println("Ugyldigt valg.");
-                }
-            } else if ("træner".equalsIgnoreCase(rolle)) {
-                if (option == 1) {
-                    visMedlemmer();
-                } else if (option == 2) {
-                    System.out.println("Opret hold (ikke implementeret endnu).");
-                } else if (option == 3) {
-                    System.out.println("Tilføj deltager til hold (ikke implementeret endnu).");
-                } else if (option == 4) {
-                    System.out.println("Fjern hold (ikke implementeret endnu).");
-                } else if (option == 5) {
-                    System.out.println("Tilføj træningsresultater (ikke implementeret endnu).");
-                } else if (option == 6) {
-                    System.out.println("Vis træningsresultater (ikke implementeret endnu).");
-                } else if (option == 0) {
-                    System.out.println("Programmet afsluttes.");
-                    break;
-                } else {
-                    System.out.println("Ugyldigt valg.");
-                }
-            } else if ("kasserer".equalsIgnoreCase(rolle)) {
-                runKontingent();
-            }
-        }
-    }
-
-    public void runKontingent() {
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            Kontingent kk = new Kontingent();
-            List<Medlem> medlemmerFraFil = getMedlemmer();
-            loadMedlemmerFromFile();
-            kk.loadMedlemmerFraFil(medlemmerFraFil);
-
-            System.out.println("Vælg hvad du vil se: ");
-            System.out.println("1. Forventet total kontingent for " + LocalDate.now().getYear());
-            System.out.println("2. Medlemmer i restance");
-            System.out.println("3. Sæt et medlem i restance");
-            System.out.println("4. Vis medlemmer");
-            System.out.println("0. Tilbage til hovedmenu");
-
-
-            int valg = scanner.nextInt();
-            scanner.nextLine();
-
-
-            switch (valg) {
-                case 1:
-                    System.out.println("Totalkontinget for " + LocalDate.now().getYear() + ": ");
-                    System.out.println(kk.totalKontingent());
-                    break;
-                case 2:
-                    kk.medlemmerIRestanceListen();
-                    break;
-                case 3:
-                    System.out.println("Indtast medlemsnummer på medlemmet, der skal sættes i restance: ");
-                    String medlemsnummer = scanner.nextLine();
-
-                    Medlem medlemToUpdate = null;
-                    for (Medlem medlem : medlemmer) {
-                        if (medlem.getMedlemsnummer().equalsIgnoreCase(medlemsnummer)) {
-                            medlemToUpdate = medlem;
-                            break;
-                        }
-                    }
-
-                    if (medlemToUpdate == null) {
-                        System.out.println("Medlem med medlemsnummer " + medlemsnummer + " blev ikke fundet.");
-                        return;
-                    }
-                    if (medlemToUpdate instanceof KonkurrenceSvoemmer ks) {
-                        ks.harBetalt(false);
-                        kk.tilfoejMedlemTilRestance(ks);
-                        System.out.println(medlemToUpdate.getMedlemsnummer() + " er blevet tilføjet til restancelisten.");
-                        break;
-                    } else if (medlemToUpdate instanceof Motionist mo) {
-                        mo.harBetalt(false);
-                        kk.tilfoejMedlemTilRestance(mo);
-                        System.out.println(medlemToUpdate.getMedlemsnummer() + " er blevet tilføjet til restancelisten.");
-                        break;
-                    } else if (medlemToUpdate instanceof PassivtMedlem pm) {
-                        pm.harBetalt(false);
-                        kk.tilfoejMedlemTilRestance(pm);
-                        System.out.println(medlemToUpdate.getMedlemsnummer() + " - " + medlemToUpdate.getNavn() + " er blevet tilføjet til restancelisten.");
-                        break;
-                    }
-                case 4:
-                    System.out.println("Viser alle medlemmer\n");
-                    medlemmer.forEach(System.out::println);
-                    return;
-                default:
-                    System.out.println("Ugyldigt valg.");
-                    break;
-            }
         }
     }
 
@@ -414,50 +192,246 @@ public class PersonPersistens {
         }
     }
 
-        public void sletMedlem() {
-            Scanner scanner = new Scanner(System.in);
+    public void sletMedlem() {
+        Scanner scanner = new Scanner(System.in);
 
-            System.out.println("Indtast medlemsnummer på medlemmet, der skal slettes: ");
-            String medlemsnummer = scanner.nextLine(); // Læs medlemsnummer fra brugeren
-            File inputfil = new File(FILE_PATH);
-            File tempfil = new File("tempfil.txt");
+        System.out.println("Indtast medlemsnummer på medlemmet, der skal slettes: ");
+        String medlemsnummer = scanner.nextLine(); // Læs medlemsnummer fra brugeren
+        File inputfil = new File(FILE_PATH);
+        File tempfil = new File("tempfil.txt");
 
-            boolean medlemFundet = false;
+        boolean medlemFundet = false;
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
-                 BufferedWriter writer = new BufferedWriter(new FileWriter(tempfil))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempfil))) {
 
-                String currentLine;
+            String currentLine;
 
-                while ((currentLine = reader.readLine()) != null) {
-                    if (currentLine.toLowerCase().contains(medlemsnummer.toLowerCase())) {
-                        medlemFundet = true; // Marker medlem som fundet
-                        continue; // Spring denne linje over (dvs. slet medlemmet)
-                    }
-                    writer.write(currentLine + System.lineSeparator());
+            while ((currentLine = reader.readLine()) != null) {
+                if (currentLine.toLowerCase().contains(medlemsnummer.toLowerCase())) {
+                    medlemFundet = true; // Marker medlem som fundet
+                    continue; // Spring denne linje over (dvs. slet medlemmet)
                 }
-
-            } catch (IOException e) {
-                System.out.println("Der opstod en fejl under læsning eller skrivning af filen: " + e.getMessage());
-                return;
+                writer.write(currentLine + System.lineSeparator());
             }
 
-            if (medlemFundet) {
-                // Erstat den gamle fil med den nye
-                if (inputfil.delete() && tempfil.renameTo(new File(FILE_PATH))) {
-                    System.out.println("Medlemmet med medlemsnummer " + medlemsnummer + " er blevet slettet.");
-                } else {
-                    System.out.println("Kunne ikke opdatere medlemsfilen.");
-                }
+        } catch (IOException e) {
+            System.out.println("Der opstod en fejl under læsning eller skrivning af filen: " + e.getMessage());
+            return;
+        }
+
+        if (medlemFundet) {
+            // Erstat den gamle fil med den nye
+            if (inputfil.delete() && tempfil.renameTo(new File(FILE_PATH))) {
+                System.out.println("Medlemmet med medlemsnummer " + medlemsnummer + " er blevet slettet.");
             } else {
-                tempfil.delete(); // Slet tempfilen, da der ikke var nogen ændringer
-                System.out.println("Medlemsnummeret blev ikke fundet.");
+                System.out.println("Kunne ikke opdatere medlemsfilen.");
+            }
+        } else {
+            tempfil.delete(); // Slet tempfilen, da der ikke var nogen ændringer
+            System.out.println("Medlemsnummeret blev ikke fundet.");
+        }
+    }
+
+
+    // Metode til at gemme medlemmer til fil
+    public void saveMedlemToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH,true))) {
+            for (Medlem medlem : medlemmer) {
+                writer.write(medlem.getMedlemsnummer() + "," + medlem.getMedlemstype() + "," + medlem.getNavn() +
+                        "," + medlem.getFoedselsdato() + "," + medlem.getTelefon() + "," + medlem.getEmail() + "," + medlem.getMedlemsdato());
+                writer.newLine();
+            }
+
+            //medlemmer.add(medlem);
+            System.out.println("Medlemmerne er blevet gemt.");
+        } catch (IOException e) {
+            System.out.println("Fejl ved gemning til fil: " + e.getMessage());
+        }
+    }
+
+    // Metode til at læse medlemmer fra fil
+    public void loadMedlemmerFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+            String linje;
+            while ((linje = reader.readLine()) != null) {
+                String[] medlemsData = linje.split(",");
+                if (medlemsData.length == 7) {
+                    String medlemsnummer = medlemsData[0];
+                    String medlemstype = medlemsData[1];
+                    String navn = medlemsData[2];
+                    String foedselsdato = medlemsData[3];
+                    String telefon = medlemsData[4];
+                    String email = medlemsData[5];
+                    String medlemsdato = medlemsData[6];
+
+
+                    Medlem medlem = null;
+                    if ("KonkurrenceSvoemmer".equalsIgnoreCase(medlemstype)) {
+                        medlem = new KonkurrenceSvoemmer(medlemsnummer, navn, foedselsdato, telefon, email, medlemsdato);
+                        medlemmer.add(medlem);
+                        medlemsNumre.add(medlemsnummer);  // Tilføj medlemsnummeret til medlemsNumre
+                    } else if ("Motionist".equalsIgnoreCase(medlemstype)) {
+                        medlem = new Motionist(medlemsnummer, navn, foedselsdato, telefon, email, medlemsdato);
+                        medlemmer.add(medlem);
+                        medlemsNumre.add(medlemsnummer);  // Tilføj medlemsnummeret til medlemsNumre
+                    } else if ("PassivtMedlem".equalsIgnoreCase(medlemstype)) {
+                        medlem = new PassivtMedlem(medlemsnummer, navn, foedselsdato, telefon, email, medlemsdato);
+                        medlemmer.add(medlem);
+                        medlemsNumre.add(medlemsnummer);  // Tilføj medlemsnummeret til medlemsNumre
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Fejl ved læsning fra fil: " + e.getMessage());
+        }
+    }
+
+    public String login() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.print("Enter Username: ");
+            String username = scanner.nextLine();
+
+            System.out.print("Enter Password: ");
+            String password = scanner.nextLine();
+
+            if (username.equals(FORMAND_USERNAME) && password.equals(FORMAND_PASSWORD)) {
+                System.out.println("Access Granted! Welcome, Formand!");
+                return "formand";
+            } else if (username.equals(TRAENER_USERNAME) && password.equals(TRAENER_PASSWORD)) {
+                System.out.println("Access Granted! Welcome, Træner!");
+                return "traener";
+            } else if (username.equals(KASSERER_USERNAME) && password.equals(KASSERER_PASSWORD)) {
+                System.out.println("Access Granted! Welcome, Kasserer!");
+                return "kasserer";
+            } else {
+                System.out.println("Invalid Username or Password! Try again.");
             }
         }
+    }
+
+
+    public void run() {
+        loadMedlemmerFromFile();
+        Scanner scanner = new Scanner(System.in);
+
+        // Login-processen
+        String rolle = login();
+
+        // Hovedmenu baseret på rolle
+        while (true) {
+            System.out.println("\nVelkommen, " + rolle + "!");
+            if ("formand".equalsIgnoreCase(rolle)) {
+                System.out.println("\n1. Opret medlem");
+                System.out.println("2. Gem medlemmer til fil");
+                System.out.println("3. Ændre medlemsoplysninger");
+                System.out.println("4. Vis medlemmer");
+                System.out.println("5. Slet medlemmer");
+                System.out.println("0. Afslut");
+            } else if ("træner".equalsIgnoreCase(rolle)) {
+                System.out.println("\n1. Vis medlemmer");
+                System.out.println("2. Oret hold");
+                System.out.println("3. tilføj deltager til hold");
+                System.out.println("4. Fjern hold");
+                System.out.println("5. Tilføj træningsresultater");
+                System.out.println("6. Vis træningsresultater");
+                System.out.println("0. Afslut");
+            } else if ("kasserer".equalsIgnoreCase(rolle)) {
+                runKontingent();
+            }
+
+            System.out.print("Vælg en mulighed: ");
+            int option = scanner.nextInt();
+            scanner.nextLine(); // Forbruger linjeskiftet
+
+            // Håndter muligheder baseret på rolle med if-else
+            if ("formand".equalsIgnoreCase(rolle)) {
+                if (option == 1) {
+                    //loadMedlemmerFromFile();
+                    opretMedlem();
+                } else if (option == 2) {
+                    saveMedlemToFile();
+                } else if (option == 3) {
+                    opdaterMedlem();
+                } else if (option == 4) {
+                    //loadMedlemmerFromFile();
+                    visMedlemmer();
+                } else if (option == 5) {
+                    sletMedlem();
+                } else if (option == 0) {
+                    System.out.println("Programmet afsluttes.");
+                    break;
+                } else {
+                    System.out.println("Ugyldigt valg.");
+                }
+            } else if ("træner".equalsIgnoreCase(rolle)) {
+                if (option == 1) {
+                    visMedlemmer();
+                } else if (option == 2) {
+                    System.out.println("Opret hold (ikke implementeret endnu).");
+                } else if (option == 3) {
+                    System.out.println("Tilføj deltager til hold (ikke implementeret endnu).");
+                } else if (option == 4) {
+                    System.out.println("Fjern hold (ikke implementeret endnu).");
+                } else if (option == 5) {
+                    System.out.println("Tilføj træningsresultater (ikke implementeret endnu).");
+                } else if (option == 6) {
+                    System.out.println("Vis træningsresultater (ikke implementeret endnu).");
+                } else if (option == 0) {
+                    System.out.println("Programmet afsluttes.");
+                    break;
+                } else {
+                    System.out.println("Ugyldigt valg.");
+                }
+            } else if ("kasserer".equalsIgnoreCase(rolle)) {
+                runKontingent();
+            }
+        }
+    }
+
+    public void runKontingent() {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            Kontingent kk = new Kontingent();
+
+            System.out.println("Vælg hvad du vil se: ");
+            System.out.println("1. Forventet total kontingent for " + LocalDate.now().getYear());
+            System.out.println("2. Medlemmer i restance");
+            System.out.println("3. Sæt et medlem i restance");
+            System.out.println("4. Vis medlemmer");
+            System.out.println("0. Tilbage til hovedmenu");
+
+
+            int valg = scanner.nextInt();
+            scanner.nextLine();
+
+
+            switch (valg) {
+                case 1:
+                    System.out.println("Totalkontinget for " + LocalDate.now().getYear() + ": ");
+                    System.out.println(kk.totalKontingent());
+                    break;
+                case 2:
+                    System.out.println("Medlemmer der er i restance: \n");
+                    kk.readMedlemmerFromFile();
+                    kk.getMedlemmerIRestance();
+                    break;
+                case 3:
+                    System.out.println("Indtast medlemsnummer på medlemmet, der skal sættes i restance: ");
+                    kk.tilfoejMedlemTilRestance();
+                    break;
+                case 4:
+                    System.out.println("Viser alle medlemmer\n");
+                    medlemmer.forEach(System.out::println);
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Ugyldigt valg.");
+                    break;
+            }
+        }
+    }
 }
-
-
-
-
-
-

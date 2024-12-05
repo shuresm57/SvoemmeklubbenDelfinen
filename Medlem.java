@@ -11,11 +11,11 @@ public abstract class Medlem {
     protected String navn;
     protected String foedselsdato;
     protected LocalDateTime medlemsdato;
-    protected boolean harBetaltKontingent = true;
+    protected boolean harBetaltKontingent;
     protected String telefon;
     protected String email;
     protected List<Medlem> medlemmer = new ArrayList<>();
-    protected Hold hold;
+
 
     public Medlem() {
         this.medlemmer = new ArrayList<>();
@@ -28,6 +28,7 @@ public abstract class Medlem {
         this.telefon = telefon;
         this.email = email;
         this.medlemsdato = LocalDateTime.now();
+        this.harBetaltKontingent = true;
     }
 
     public Medlem(String medlemsnummer, String navn, String foedselsdato, String telefon, String email) {
@@ -62,13 +63,6 @@ public abstract class Medlem {
         return medlemsdato.format(formatter);
     }
 
-    public String getFoedselsdato(){
-        return foedselsdato;
-    }
-
-    public void setFoedselsdato(String fødseldato){
-        this.foedselsdato = foedselsdato;}
-
     public String getTelefon() {
         return telefon;
     }
@@ -90,24 +84,18 @@ public abstract class Medlem {
     }
 
     public boolean erSenior(){
-        if(getAlder() >= 65){
-            return true;
-        }
-        return false;
+        return getAlder() >= 65;
     }
 
     public boolean erJunior(){
-        if(getAlder() < 18){
-            return true;
-        }
-        return false;
+        return getAlder() < 18;
     }
 
     public boolean harBetalt(){
         return harBetaltKontingent;
     }
 
-    public void harBetalt(boolean harBetaltKontingent){
+    public void setBetalt(boolean harBetaltKontingent){
         this.harBetaltKontingent = harBetaltKontingent;
     }
 
@@ -115,4 +103,7 @@ public abstract class Medlem {
         return "Medlemsnummer: " + ", " + medlemsnummer + ", " +"Navn: " + navn + ", " + "Fødselsdato: " + foedselsdato + ", " + "Telefon: " + telefon + ", " + "Email: " + email;
     }
 
+    public String getFoedselsdato() {
+        return foedselsdato;
+    }
 }

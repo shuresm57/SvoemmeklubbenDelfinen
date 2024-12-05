@@ -1,2 +1,3 @@
 Mathias,21,30569972,mathias@mortensenoutlookjijsiodfjsdfd.dk
 Valdemar,22,22222222,22222
+Niko,23,33333333,nikos@niko.dk

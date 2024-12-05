@@ -13,6 +13,10 @@ public class KonkurrenceSvoemmer extends Medlem {
         super(medlemsnummer, navn, foedselsdato, telefon, email);
     }
 
+    public KonkurrenceSvoemmer(){
+
+    }
+
     /*
     // Metode til at registrere et nyt resultat
     public void registrerResultat(String disciplin, double tid, Date dato) {
