@@ -415,7 +415,7 @@ public class PersonPersistens {
                     break;
                 case 2:
                     System.out.println("Medlemmer der er i restance: \n");
-                    kk.readMedlemmerFromFile();
+                    kk.loadMedlemmerFromFile();
                     kk.getMedlemmerIRestance();
                     break;
                 case 3:
