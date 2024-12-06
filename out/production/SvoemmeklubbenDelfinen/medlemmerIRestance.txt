@@ -1,1 +1,1 @@
-KS001,KonkurrenceSvoemmer,Roar,1992-12-07,40869403,roar@roar.dk,05-12-2024
+KS001,KonkurrenceSvoemmer,Roar,1992-12-07,40869403,roar@roar.dk

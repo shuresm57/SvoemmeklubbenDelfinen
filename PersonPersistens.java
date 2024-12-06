@@ -287,39 +287,36 @@ public class PersonPersistens {
         }
     }
 
-    public String login() {
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.print("Enter Username: ");
-            String username = scanner.nextLine();
 
-            System.out.print("Enter Password: ");
-            String password = scanner.nextLine();
+    public String login() {
+        Console console = System.console();
+        while (true) {
+            System.out.println("Svømmeklub Delfinen");
+            System.out.print("Indtast brugernavn:" + "\n");
+            String username = console.readLine();
+
+            char[] passwordArray = console.readPassword("Indtast kodeord:" + "\n");
+            String password = new String(passwordArray);
 
             if (username.equals(FORMAND_USERNAME) && password.equals(FORMAND_PASSWORD)) {
-                System.out.println("Access Granted! Welcome, Formand!");
                 return "formand";
             } else if (username.equals(TRAENER_USERNAME) && password.equals(TRAENER_PASSWORD)) {
-                System.out.println("Access Granted! Welcome, Træner!");
                 return "traener";
             } else if (username.equals(KASSERER_USERNAME) && password.equals(KASSERER_PASSWORD)) {
-                System.out.println("Access Granted! Welcome, Kasserer!");
                 return "kasserer";
             } else {
-                System.out.println("Invalid Username or Password! Try again.");
+                System.out.println("Forkert brugernavn eller kode. Prøv igen!");
             }
         }
     }
-
 
     public void run() {
         loadMedlemmerFromFile();
         Scanner scanner = new Scanner(System.in);
 
-        // Login-processen
+
         String rolle = login();
 
-        // Hovedmenu baseret på rolle
         while (true) {
             System.out.println("\nVelkommen, " + rolle + "!");
             if ("formand".equalsIgnoreCase(rolle)) {
@@ -400,7 +397,8 @@ public class PersonPersistens {
             System.out.println("1. Forventet total kontingent for " + LocalDate.now().getYear());
             System.out.println("2. Medlemmer i restance");
             System.out.println("3. Sæt et medlem i restance");
-            System.out.println("4. Vis medlemmer");
+            System.out.println("4. Slet et medlem fra restance");
+            System.out.println("5. Vis medlemmer");
             System.out.println("0. Tilbage til hovedmenu");
 
 
@@ -414,8 +412,8 @@ public class PersonPersistens {
                     System.out.println(kk.totalKontingent());
                     break;
                 case 2:
-                    System.out.println("Medlemmer der er i restance: \n");
                     kk.loadMedlemmerFromFile();
+                    System.out.println("Medlemmer der er i restance: \n");
                     kk.getMedlemmerIRestance();
                     break;
                 case 3:
@@ -423,6 +421,10 @@ public class PersonPersistens {
                     kk.tilfoejMedlemTilRestance();
                     break;
                 case 4:
+                    System.out.println("Indtast medlemsnummer på medlemmet, der skal slettes i restance: ");
+                    kk.sletMedlemRestance();
+                    break;
+                case 5:
                     System.out.println("Viser alle medlemmer\n");
                     medlemmer.forEach(System.out::println);
                     break;
