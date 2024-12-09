@@ -6,7 +6,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 public abstract class Medlem {
-
+    //changes 9/12
     protected String medlemsnummer;
     protected String navn;
     protected String foedselsdato;
