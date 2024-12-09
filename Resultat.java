@@ -1,38 +1,23 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-//commit 5/12
 public class Resultat {
 
     private String disciplin;
     private double tid;
     private String dato;
     private KonkurrenceSvoemmer svoemmer;
-    Traener traener;
-    private List<String> Discipliner;
+    private Traener traener;
+    private List<String> discipliner;
     private List<Resultat> resultater;
+    private MedlemManagement mm = new MedlemManagement();
 
     private static final String filePath = "traeningsResultater.txt";
 
     public static void main(String[] args) {
         Resultat r = new Resultat();
-        r.traeningsResultater();
-    }
-
-
-    public List<Resultat> getResultater() {
-        return resultater;
-    }
-
-    public List<String> getDiscipliner() {
-        return Discipliner;
-    }
-
-    public void setDiscipliner(List<String> Discipliner) {
-        this.Discipliner = Discipliner;
+        //r.traeningsResultater();
+        r.visTop5Resultater();
     }
 
     public Resultat(KonkurrenceSvoemmer svoemmer, String disciplin, double tid, String dato) {
@@ -43,20 +28,43 @@ public class Resultat {
     }
 
     public Resultat() {
+        resultater = new ArrayList<>();
+    }
 
+    public List<Resultat> getResultater() {
+        return resultater;
+    }
+
+    public List<String> getDiscipliner() {
+        return discipliner;
+    }
+
+    public void setDiscipliner(List<String> discipliner) {
+        this.discipliner = discipliner;
+    }
+
+    public String getDisciplin() {
+        return disciplin;
+    }
+
+    public double getTid() {
+        return tid;
+    }
+
+    public KonkurrenceSvoemmer getSvoemmer() {
+        return svoemmer;
     }
 
     public void traeningsResultater() {
-        Discipliner = new ArrayList<>();
-        Discipliner.add("Butterfly");
-        Discipliner.add("Crawl");
-        Discipliner.add("Rygcrawl");
-        Discipliner.add("Brystsvømning");
+        discipliner = new ArrayList<>();
+        discipliner.add("Butterfly");
+        discipliner.add("Crawl");
+        discipliner.add("Rygcrawl");
+        discipliner.add("Brystsvømning");
         Scanner scanner = new Scanner(System.in);
         MedlemManagement ps = new MedlemManagement();
         ps.loadMedlemmerFromFile();
 
-        //resultat.loadFromTraenerFile(); // Sørger for, at trænerlisten er initialiseret korrekt
         while (true) {
             System.out.println("Indtast medlemsnummer på svømmer for at oprette træningsresultater:");
             String medlemsnummer = scanner.nextLine();
@@ -74,56 +82,48 @@ public class Resultat {
                 continue;  // Fortsæt til næste iteration af løkken, hvis medlemsnummer ikke blev fundet
             }
 
-            // Fortsæt med resten af logikken, når medlemsnummeret er fundet
-            // F.eks. indhent resultater, dato, disciplin osv.
             System.out.println("Medlem fundet: " + medlemToUpdate.getNavn());
 
-            // ...
-
-
-
-
-        System.out.println("Indtast dato for afholdelse af træning");
+            System.out.println("Indtast dato for afholdelse af træning (dd-MM-yyyy):");
             String dato = scanner.nextLine();
 
-            System.out.println("Vælg disciplin: ");
+            System.out.println("Vælg disciplin:");
             for (int i = 0; i < getDiscipliner().size(); i++) {
                 System.out.println((i + 1) + ". " + getDiscipliner().get(i));
             }
 
-            System.out.println("Vælg disciplin, indtast nummmer: ");
+            System.out.println("Vælg disciplin, indtast nummer:");
             int disciplinValg = Integer.parseInt(scanner.nextLine());
             String valgtDisciplin = getDiscipliner().get(disciplinValg - 1);
 
-            System.out.println("tid for disciplin i sekunder: ");
+            System.out.println("Tid for disciplin i sekunder:");
             double tid = Double.parseDouble(scanner.nextLine());
 
+            Resultat resu = new Resultat((KonkurrenceSvoemmer) medlemToUpdate, valgtDisciplin, tid, dato);
 
-            // Brug den valgte træner
-            Resultat resu = new Resultat(svoemmer, valgtDisciplin, tid, dato);
-            // Tilføj hold til listen
-
-
-            //gem til arraylist af resultater
             resultater.add(resu);
-            gemResultatTilFil();
-            System.out.println("Resultat oprettet: " + getResultater() );
+            gemResultatTilFil(resu);
+            System.out.println("Resultat oprettet: " + resu);
             break;
         }
     }
 
-    public void gemResultatTilFil() {
+    public void gemResultatTilFil(Resultat resultat) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            // Skriver resultatet i filen
-            writer.write(svoemmer.getMedlemsnummer() + "," + disciplin + "," + tid + "," + dato);
+            writer.write(resultat.svoemmer.getMedlemsnummer() + "," + resultat.getDisciplin() + "," +
+                    resultat.getTid() + "," + resultat.dato);
             writer.newLine();  // Nyt resultat på en ny linje
-            System.out.println("Resultat gemt: " + disciplin + " - " + tid);
+            System.out.println("Resultat gemt: " + resultat.getDisciplin() + " - " + resultat.getTid());
         } catch (IOException e) {
             System.out.println("Fejl ved skrivning af resultat til fil: " + e.getMessage());
         }
     }
 
-    public static void laesResultaterFraFil(String filePath) {
+    public void laesResultaterFraFil() {
+        resultater = new ArrayList<>();
+        MedlemManagement mm = new MedlemManagement();
+        mm.loadMedlemmerFromFile();
+
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -132,10 +132,18 @@ public class Resultat {
                     String medlemsnummer = data[0];
                     String disciplin = data[1];
                     double tid = Double.parseDouble(data[2]);
-                    Date dato = new Date(data[3]);
+                    String dato = data[3];
 
-                    // Her kan du oprette et nyt Resultat objekt og håndtere det som nødvendigt
-                    System.out.println("Medlemsnummer: " + medlemsnummer + ", Disciplin: " + disciplin + ", Tid: " + tid + ", Dato: " + dato);
+                    // Find svømmer ud fra medlemsnummer
+                    KonkurrenceSvoemmer svoemmer = mm.findKonkurrenceSvoemmerByMedlemsnummer(medlemsnummer);
+
+                    // Hvis svømmeren ikke findes, skal du måske håndtere det
+                    if (svoemmer != null) {
+                        Resultat resultat = new Resultat(svoemmer, disciplin, tid, dato);
+                        resultater.add(resultat);
+                    } else {
+                        System.out.println("Svømmer med medlemsnummer " + medlemsnummer + " ikke fundet.");
+                    }
                 }
             }
         } catch (IOException e) {
@@ -143,13 +151,32 @@ public class Resultat {
         }
     }
 
-    public String getDisciplin() {
-        return disciplin;
+
+    public void visTop5Resultater() {
+        mm.loadMedlemmerFromFile();
+        laesResultaterFraFil();
+
+        List<String> discipliner = Arrays.asList("Butterfly", "Crawl", "Rygcrawl", "Brystsvømning");
+
+        for (String disciplin : discipliner) {
+            List<Resultat> disciplinResultater = new ArrayList<>();
+
+            for (Resultat resultat : resultater) {
+                if (resultat.getDisciplin().equalsIgnoreCase(disciplin)) {
+                    disciplinResultater.add(resultat);
+                }
+            }
+
+            disciplinResultater.sort(Comparator.comparingDouble(Resultat::getTid));
+
+            System.out.println("Top 5 resultater for " + disciplin);
+            for (int i = 0; i < Math.min(5, disciplinResultater.size()); i++) {
+                Resultat resu = disciplinResultater.get(i);
+                System.out.println((i + 1) + ". " + resu.getSvoemmer().getNavn() + " - Tid: " + resu.getTid() + " sekunder");
+            }
+        }
     }
 
-    public double getTid() {
-        return tid;
-    }
 
     @Override
     public String toString() {

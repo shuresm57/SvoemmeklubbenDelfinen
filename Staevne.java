@@ -1,47 +1,150 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
-//commit 5/12
+import java.io.*;
+import java.time.LocalDate;
+import java.util.*;
+
 public class Staevne {
 
-    private List<KonkurrenceSvoemmer> konksvom = new ArrayList<>();
-    private int tid;
-    private String staevne;
-    private int placering;
-    private Resultat resultat;
 
-    public Staevne(List<KonkurrenceSvoemmer> konksvom, Resultat resultat) {
-        this.konksvom = konksvom;
-        this.resultat = resultat;
+    private String dato;
+    private String staevneNavn;
+
+    private static final String FILE_PATH_STAEVNE = "staevneResultater.txt";
+    private List<String> tider = new ArrayList<>();
+    private List<String> deltagere = new ArrayList<>();
+    private List<String> kssvoemmer = new ArrayList<>();
+    private List<Staevne> staevneListe = new ArrayList<>();
+    private List<String> valgteDiscipliner = new ArrayList<>();
+    MedlemManagement mm = new MedlemManagement();
+
+    public static void main(String[] args) {
+        Staevne s = new Staevne();
+        s.opretStaevne();
     }
 
-    public void KonkurrenceResultat(String staevne, int placering, int tid) {
-        this.staevne = staevne;
-        this.placering = placering;
-        this.tid = tid;
+
+    public Staevne() {
     }
 
-    @Override
-    public String toString() {
-        return "Stævne: " + staevne + ", Placering: " + placering + ", Tid: " + tid;
+    public Staevne(String navn, String dato, List<String> valgteDiscipliner, List<String> deltagere, List<String> tider) {
+        this.staevneNavn = navn;
+        this.dato = dato;
+        this.valgteDiscipliner = valgteDiscipliner;
+        this.deltagere = deltagere;
+        this.tider = tider;
     }
 
-     /*public static Staevne fromString(String data) {
-        String[] parts = data.split(",");
-        if (parts.length == 4) {
-            String medlemsnummer = parts[0];
-            String staevne = parts[1];
-            int placering = Integer.parseInt(parts[2]);
-            int tid = Integer.parseInt(parts[3]);
-            return new Staevne(medlemsnummer, staevne, placering, tid);
+    public Staevne(String navn, String dato, List<String> valgteDiscipliner, List<String> tider) {
+        this.staevneNavn = navn;
+        this.dato = dato;
+        this.valgteDiscipliner = valgteDiscipliner;
+        this.tider = tider;
+    }
+
+
+    public List<String> getTider() {
+        return tider;
+    }
+
+    public String getDato() {
+        return dato;
+    }
+
+    public String getStaevneNavn() {
+        return staevneNavn;
+    }
+
+    public List<String> getValgteDiscipliner() {
+        return valgteDiscipliner;
+    }
+
+    public void tilfoejKSframedlemtilKs() {
+        mm.loadMedlemmerFromFile();
+        for (String ks : mm.getMedlemsNumre()) {
+            if (ks.substring(0, 2).equalsIgnoreCase("KS")) {
+                kssvoemmer.add(ks);
+            }
         }
-        throw new IllegalArgumentException("Ugyldigt dataformat: " + data);
-    }*/
+    }
 
-    public void registerResultater() {
+    public List<String> getDeltagere() {
+        return deltagere;
+    }
+
+    public List<String> getKssvoemmer() {
+        return kssvoemmer;
+    }
+
+    public void opretStaevne() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Indtast medlemsnummer for svømmeren: ");
-        String medlemsnummer = scanner.nextLine();
+        tilfoejKSframedlemtilKs();
+        Discipliner d = new Discipliner();
+        List<String> staevneDeltagere = new ArrayList<>();
+
+        while (true) {
+            System.out.println("Indtast navn og meter på stævnet, der skal oprettes: ");
+            String navn = scanner.nextLine();
+
+            System.out.println("Indtast dato for afholdelse af stævne (dd-MM-yyyy):");
+            String dato = scanner.nextLine();
+
+            while (true) {
+                System.out.println("Vælg disciplin (indtast nummer). Tast 0 for at afslutte:");
+                for (int i = 0; i < d.getDiscipliner().size(); i++) {
+                    System.out.println((i + 1) + ". " + d.getDiscipliner().get(i));
+                }
+
+                int disciplinValg = scanner.nextInt();
+                scanner.nextLine(); // Forbrug newline karakteren
+
+                if (disciplinValg == 0) break; // Afslut valg af discipliner
+
+                if (disciplinValg > 0 && disciplinValg <= d.getDiscipliner().size()) {
+                    String valgtDisciplin = d.getDiscipliner().get(disciplinValg - 1);
+                    if (!valgteDiscipliner.contains(valgtDisciplin)) {
+                        valgteDiscipliner.add(valgtDisciplin);
+                        System.out.println("Disciplin tilføjet: " + valgtDisciplin);
+                        break; // Gå videre til næste punkt i while-løkken efter valg af disciplin
+                    } else {
+                        System.out.println("Disciplinen er allerede valgt.");
+                        break; // Gå videre til næste punkt i while-løkken selv hvis disciplinen er allerede valgt
+                    }
+                } else {
+                    System.out.println("Ugyldigt valg. Prøv igen.");
+                }
+            }
+            while (true) {
+                System.out.println("Vælg svømmer (indtast nummer). Tast 0 for at afslutte:");
+                System.out.println(tider);
+                for (int i = 0; i < kssvoemmer.size(); i++) {
+                    System.out.println((i + 1) + ". " + kssvoemmer.get(i));
+                }
+
+                int svoemmerValg = scanner.nextInt();
+                if (svoemmerValg == 0) break; // Afslut valg af discipliner
+
+                if (svoemmerValg > 0 && svoemmerValg <= kssvoemmer.size()) {
+                    String valgtSvoemmer = kssvoemmer.get(svoemmerValg - 1);
+                    if (!deltagere.contains(valgtSvoemmer)) {
+                        deltagere.add(valgtSvoemmer);
+                        System.out.println("Svømmer tilføjet: " + valgtSvoemmer);
+                        System.out.println("Tilføj tid til svømmer: ");
+                        double tid = scanner.nextDouble();
+                        tider.add(("Svømmer: " + valgtSvoemmer + ", tid for svømmer: " + String.valueOf(tid)) + " sekunder.");
+                    } else {
+                        System.out.println("Svømmeren er allerede valgt.");
+                    }
+                } else {
+                    System.out.println("Ugyldigt valg. Prøv igen.");
+                }
+            }
+            Staevne nytStaevne = new Staevne(navn, dato, valgteDiscipliner, tider);
+            staevneListe.add(nytStaevne);
+            FileUtil.saveStaevne(FILE_PATH_STAEVNE, staevneListe);
+            System.out.println("Stævne oprettet: " + nytStaevne.getStaevneNavn());
+            break;
+        }
     }
 }
+
+
+

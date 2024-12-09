@@ -19,7 +19,6 @@ public class MedlemManagement {
 
     private static final Kontingent kontingent = new Kontingent();
     private static final Traener traener = new Traener();
-    private Hold hold = new Hold();
 
     public static void main(String[] args) {
         MedlemManagement persistens = new MedlemManagement();
@@ -161,12 +160,23 @@ public class MedlemManagement {
         }
     }
 
+    public KonkurrenceSvoemmer findKonkurrenceSvoemmerByMedlemsnummer(String medlemsnummer) {
+        loadMedlemmerFromFile(); // Sørger for, at medlemmerne er indlæst.
+
+        for (Medlem medlem : medlemmer) {
+            if (medlem instanceof KonkurrenceSvoemmer && medlem.getMedlemsnummer().equals(medlemsnummer)) {
+                return (KonkurrenceSvoemmer) medlem;
+            }
+        }
+
+        System.out.println("Ingen konkurrencesvømmer fundet med medlemsnummer: " + medlemsnummer);
+        return null; // Returner null, hvis ingen matcher.
+    }
 
     //hjælpemetode
     public void loadMedlemmerFromFile(){
         FileUtil.loadMedlemmerFromFile(FILE_PATH_MEDLEMMER,7,medlemmer,medlemsNumre);
     }
-
 
     // Metode til at oprette og gemme et medlem
     public void opretMedlem() {
@@ -222,7 +232,6 @@ public class MedlemManagement {
             }
         }
     }
-
 
     // Metode til at opdatere et medlem
     public void opdaterMedlem() {
