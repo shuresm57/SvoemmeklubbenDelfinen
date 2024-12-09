@@ -1,6 +1,4 @@
-
-import java.io.*;
-import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 //commit 5/12
@@ -12,9 +10,9 @@ public class Kontingent {
     private             static final double         SENIOR_RABAT            = 0.75;
     private             static final double         PASSIVT_KONTINGENT      = 500.0;
     private             List<Medlem>                medlemmerIRestance      = new ArrayList<>();
-    private             PersonPersistens            pp                      = new PersonPersistens();
+    private             MedlemManagement            mm                      = new MedlemManagement();
     private             Scanner                     scanner                 = new Scanner(System.in);
-    private             static final String         FILE_PATH               = "medlemmerIRestance.txt";
+    private             static final String         FILE_PATH_RESTANCE      = "medlemmerIRestance.txt";
 
     public Kontingent() {}
 
@@ -24,10 +22,10 @@ public class Kontingent {
     }
 
     public double totalKontingent() {
-        pp.loadMedlemmerFromFile();
+        mm.loadMedlemmerFromFile();
         double total = 0.0;
 
-        for (Medlem medlem : pp.getMedlemmer()) {
+        for (Medlem medlem : mm.getMedlemmer()) {
             if (medlem instanceof PassivtMedlem) {
                 total += PASSIVT_KONTINGENT;
             } else if (medlem.erJunior()) {
@@ -42,20 +40,18 @@ public class Kontingent {
     }
 
     public void tilfoejMedlemTilRestance() {
-        pp.loadMedlemmerFromFile();
-
         String medlemsnummer = scanner.nextLine();
-
+        boolean findesAllerede = false;
         Medlem medlemToUpdate = null;
-        for (Medlem m : pp.getMedlemmer()) {
+        for (Medlem m : mm.getMedlemmer()) {
             if (m.getMedlemsnummer().equalsIgnoreCase(medlemsnummer)) {
                 medlemToUpdate = m;
                 break;
             }
-        }
-        if (medlemToUpdate == null) {
-            System.out.println("Medlem med medlemsnummer " + medlemsnummer + " blev ikke fundet.");
-        } else if (medlemToUpdate instanceof KonkurrenceSvoemmer ks) {
+            else{
+                break;
+            }
+        } if (medlemToUpdate instanceof KonkurrenceSvoemmer ks) {
             ks.setBetalt(false);
             medlemmerIRestance.add(ks);
         } else if (medlemToUpdate instanceof Motionist mo) {
@@ -65,118 +61,68 @@ public class Kontingent {
             pm.setBetalt(false);
             medlemmerIRestance.add(pm);
         }
-        saveMedlemToFile();
-    }
-
-    public void saveMedlemToFile() {
-        List<String> eksisterendeMedlemsnumre = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String linje;
-            while ((linje = reader.readLine()) != null) {
-                String[] data = linje.split(","); // Forvent at medlemsnummer er det første felt
-                if (data.length > 0) {
-                    eksisterendeMedlemsnumre.add(data[0]);
-                }
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Filen blev ikke fundet.");
-        } catch (IOException e) {
-            System.out.println("Fejl ved læsning af fil: " + e.getMessage());
+        else if (findesAllerede) {
         }
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            for (Medlem medlem : medlemmerIRestance) {
-                if (eksisterendeMedlemsnumre.contains(medlem.getMedlemsnummer())) {
-                    System.out.println("Medlem findes allerede i restance listen.");
-                }else{
-                    writer.write(medlem.getMedlemsnummer() + "," + medlem.getMedlemstype() + "," + medlem.getNavn() +
-                            "," + medlem.getFoedselsdato() + "," + medlem.getTelefon() + "," + medlem.getEmail());
-                    writer.newLine();
-                    System.out.println(medlem.getMedlemsnummer() + " - " + medlem.getNavn() + " er blevet gemt.");
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Fejl ved gemning til fil: " + e.getMessage());
-        }
-    }
-
-
-    public void loadMedlemmerFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length == 6) { // Sørg for at linjen har det rigtige antal datafelter
-                    String medlemsnummer = data[0];
-                    String medlemstype = data[1];
-                    String navn = data[2];
-                    String foedselsdato = data[3];
-                    String telefon = data[4];
-                    String email = data[5];
-                    Medlem medlem = null;
-                    switch (medlemstype) {
-                        case "KonkurrenceSvoemmer":
-                            medlem = new KonkurrenceSvoemmer(medlemsnummer, navn, foedselsdato, telefon, email);
-                            break;
-                        case "Motionist":
-                            medlem = new Motionist(medlemsnummer, navn, foedselsdato, telefon, email);
-                            break;
-                        case "PassivtMedlem":
-                            medlem = new PassivtMedlem(medlemsnummer, navn, foedselsdato, telefon, email);
-                            break;
-                    }
-                    if (medlem != null) {
-                        medlemmerIRestance.add(medlem);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Fejl ved indlæsning fra fil: " + e.getMessage());
-        }
-    }
-
-    public void sletMedlemRestance() {
-        Scanner scanner = new Scanner(System.in);
-
-        String medlemsnummer = scanner.nextLine();
-        File inputfil = new File(FILE_PATH);
-        File tempfil = new File("tempfil.txt");
-
-        boolean medlemFundet = false;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(tempfil))) {
-
-            String currentLine;
-
-            while ((currentLine = reader.readLine()) != null) {
-                if (currentLine.toLowerCase().contains(medlemsnummer.toLowerCase())) {
-                    medlemFundet = true; // Marker medlem som fundet
-                    continue; // Spring denne linje over (dvs. slet medlemmet)
-                }
-                writer.write(currentLine + System.lineSeparator());
-            }
-
-        } catch (IOException e) {
-            System.out.println("Der opstod en fejl under læsning eller skrivning af filen: " + e.getMessage());
-            return;
-        }
-
-        if (medlemFundet) {
-            // Erstat den gamle fil med den nye
-            if (inputfil.delete() && tempfil.renameTo(new File(FILE_PATH))) {
-                System.out.println("Medlemmet med medlemsnummer " + medlemsnummer + " er blevet slettet.");
-            } else {
-                System.out.println("Kunne ikke opdatere medlemsfilen.");
-            }
-        } else {
-            tempfil.delete(); // Slet tempfilen, da der ikke var nogen ændringer
-            System.out.println("Medlemsnummeret blev ikke fundet.");
-        }
+        FileUtil.saveMedlemmer(FILE_PATH_RESTANCE,medlemmerIRestance,false);
     }
 
     public void getMedlemmerIRestance(){
-        medlemmerIRestance.forEach(System.out::println);
+        if(!medlemmerIRestance.isEmpty()){
+            System.out.println("Medlemmer der er i restance:\n");
+            medlemmerIRestance.forEach(System.out::println);
+        }
+        else {
+            System.out.println("Ingen medlemmer er i restance.\n");
+        }
+
+    }
+
+    public void runKontingent() {
+        FileUtil.loadMedlemmerFromFile(FILE_PATH_RESTANCE,6,medlemmerIRestance,null);
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+
+            System.out.println("Vælg hvad du vil se: ");
+            System.out.println("1. Forventet total kontingent for " + LocalDate.now().getYear());
+            System.out.println("2. Medlemmer i restance");
+            System.out.println("3. Sæt et medlem i restance");
+            System.out.println("4. Slet et medlem fra restance");
+            System.out.println("5. Vis medlemmer");
+            System.out.println("0. Tilbage til hovedmenu");
+
+
+            int valg = scanner.nextInt();
+            scanner.nextLine();
+
+
+            switch (valg) {
+                case 1:
+                    System.out.println("Totalkontinget for " + LocalDate.now().getYear() + ": ");
+                    System.out.println(totalKontingent());
+                    break;
+                case 2:
+                    getMedlemmerIRestance();
+                    break;
+                case 3:
+                    System.out.println("Indtast medlemsnummer på medlemmet, der skal sættes i restance: ");
+                    tilfoejMedlemTilRestance();
+                    break;
+                case 4:
+                    FileUtil.sletMedlem(FILE_PATH_RESTANCE);
+                    FileUtil.loadMedlemmerFromFile(FILE_PATH_RESTANCE,6,medlemmerIRestance,null);
+                    break;
+                case 5:
+                    System.out.println("Viser alle medlemmer\n");
+                    mm.getMedlemmer().forEach(System.out::println);
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Ugyldigt valg.");
+                    break;
+            }
+        }
     }
 }
 

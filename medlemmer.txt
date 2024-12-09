@@ -2,5 +2,5 @@ KS004,KonkurrenceSvoemmer,valde,2995-01-04,15000,fucknufucking,04-12-2024
 KS005,KonkurrenceSvoemmer,mathias,2003-05-21,30569772,madsmioasd,04-12-2021
 KS001,KonkurrenceSvoemmer,Roar,1992-12-07,40869403,roar@roar.dk,05-12-2024
 KS006,KonkurrenceSvoemmer,kalle,2000-04-04,2000000,vmkawmf,05-13-2023
-
-
+PM001,PassivtMedlem,Theo,1000-10-10,10000000,theo@theo.dk,07-12-2024
+MN001,Motionist,Bibi,1010-04-04,1000000,bibi@bibi.dk,07-12-2024

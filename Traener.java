@@ -11,7 +11,8 @@ public class Traener {
     private String email;
     private Hold hold;
     private List<Traener> traenerListe = new ArrayList<>();
-    private static final String FILE_PATH = "traenere.txt";
+    private static final String FILE_PATH_TRAENER = "traenere.txt";
+    private MedlemManagement mm = new MedlemManagement();
 
     public Traener() {
 
@@ -81,40 +82,52 @@ public class Traener {
 
             Traener traener = new Traener(navn, alder, telefon, email);
             addTraener(traener);
-            writeToFile();
+            FileUtil.writeTraenerToFile(FILE_PATH_TRAENER,traenerListe);
             System.out.println("Træner oprettet: " + traener.getNavn());
             break;
                         }
         }
 
-    public void writeToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            for (Traener traener : traenerListe) {
-                writer.write(traener.navn + "," + traener.alder + "," + traener.telefon + "," + traener.email);
-                writer.newLine();
-            }
-            System.out.println("Træner(e) gemt til fil.");
-        } catch (IOException e) {
-            System.out.println("Fejl ved skrivning af trænere til fil: " + e.getMessage());
-        }
+    //Hjælpefunktion til FileUtil.loadHoldFromFile
+    public void loadFromFile(){
+        FileUtil.loadTraenerFromFile(FILE_PATH_TRAENER,traenerListe);
     }
 
-    public void loadFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length == 4) {
-                    Traener traener = new Traener(data[0], Integer.parseInt(data[1]), data[2], data[3]);
-                    traenerListe.add(traener);
-                }
-            }
-            System.out.println("Trænere indlæst fra fil.");
-        } catch (IOException e) {
-            System.out.println("Fejl ved indlæsning af trænere fra fil: " + e.getMessage());
+    public void runTraener(){
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Vælg en mulighed: ");
+        int option = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (option) {
+            case 1:
+                mm.visMedlemmer();
+                break;
+            case 2:
+                hold.opretHold();
+                break;
+            case 3:
+                System.out.println("Tilføj deltager til hold (ikke implementeret endnu).");
+                break;
+            case 4:
+                System.out.println("Fjern hold.");
+                FileUtil.sletHold(hold.getFILE_PATH_HOLD());
+                break;
+            case 5:
+                System.out.println("Tilføj træningsresultater (ikke implementeret endnu).");
+                break;
+            case 6:
+                System.out.println("Vis træningsresultater (ikke implementeret endnu).");
+                break;
+            case 0:
+                System.out.println("Programmet afsluttes.");
+                break;
+            default:
+                System.out.println("Ugyldigt valg.");
+                break;
         }
     }
-
 
     @Override
     public String toString() {

@@ -4,3 +4,4 @@ KS001,KonkurrenceSvoemmer,Roar,1992-12-07,40869403,roar@roar.dk,05-12-2024
 KS006,KonkurrenceSvoemmer,kalle,2000-04-04,2000000,vmkawmf,05-13-2023
 
 
+PM001,PassivtMedlem,Theo,1000-10-10,10000000,theo@theo.dk,07-12-2024

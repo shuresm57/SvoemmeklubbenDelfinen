@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 //commit 5/12
 public class Resultat {
+
     private String disciplin;
     private double tid;
     private String dato;
@@ -45,7 +46,6 @@ public class Resultat {
 
     }
 
-
     public void traeningsResultater() {
         Discipliner = new ArrayList<>();
         Discipliner.add("Butterfly");
@@ -53,10 +53,10 @@ public class Resultat {
         Discipliner.add("Rygcrawl");
         Discipliner.add("Brystsvømning");
         Scanner scanner = new Scanner(System.in);
-        PersonPersistens ps = new PersonPersistens();
+        MedlemManagement ps = new MedlemManagement();
         ps.loadMedlemmerFromFile();
 
-        //resultat.loadFromFile(); // Sørger for, at trænerlisten er initialiseret korrekt
+        //resultat.loadFromTraenerFile(); // Sørger for, at trænerlisten er initialiseret korrekt
         while (true) {
             System.out.println("Indtast medlemsnummer på svømmer for at oprette træningsresultater:");
             String medlemsnummer = scanner.nextLine();
@@ -143,7 +143,6 @@ public class Resultat {
         }
     }
 
-
     public String getDisciplin() {
         return disciplin;
     }
@@ -152,12 +151,8 @@ public class Resultat {
         return tid;
     }
 
-
-
     @Override
     public String toString() {
         return "Disciplin: " + disciplin + ", Tid: " + tid + ", Dato: " + dato;
     }
 }
-
-
