@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Discipliner {
-
+    //changes 9/12
     private  List<String>discipliner = new ArrayList<>();
 
     public Discipliner(){

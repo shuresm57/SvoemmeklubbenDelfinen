@@ -19,7 +19,7 @@ public class MedlemManagement {
 
     private static final Kontingent kontingent = new Kontingent();
     private static final Traener traener = new Traener();
-
+    //changes 9/12
     public static void main(String[] args) {
         MedlemManagement persistens = new MedlemManagement();
         persistens.run();// Kør programmet og lad brugeren vælge og oprette medlemmer.

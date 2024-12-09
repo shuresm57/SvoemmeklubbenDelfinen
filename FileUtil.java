@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class FileUtil {
-
+    //changes 9/12
     private List<KonkurrenceSvoemmer> konksvoemmer = new ArrayList<>();
 
 

@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-//commit 5/12
+//changes 9/12
 public class Traener {
 
     private String navn;

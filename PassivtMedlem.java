@@ -1,7 +1,7 @@
 import java.time.LocalDate;
 
 public class PassivtMedlem extends Medlem {
-    //commit 5/12
+    //changes 9/12
     public PassivtMedlem(String medlemsnummer, String navn, String fødselsdato, String telefon, String email, String medlemsdato) {
         super(medlemsnummer, navn, fødselsdato, telefon, email, medlemsdato);
     }

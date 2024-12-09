@@ -13,7 +13,7 @@ public class Kontingent {
     private             MedlemManagement            mm                      = new MedlemManagement();
     private             Scanner                     scanner                 = new Scanner(System.in);
     private             static final String         FILE_PATH_RESTANCE      = "medlemmerIRestance.txt";
-
+    //changes 9/12
     public Kontingent() {}
 
     public static void main(String[] args) {

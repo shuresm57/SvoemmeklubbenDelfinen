@@ -15,7 +15,7 @@ public class Staevne {
     private List<Staevne> staevneListe = new ArrayList<>();
     private List<String> valgteDiscipliner = new ArrayList<>();
     MedlemManagement mm = new MedlemManagement();
-
+    //changes 9/12
     public static void main(String[] args) {
         Staevne s = new Staevne();
         s.opretStaevne();

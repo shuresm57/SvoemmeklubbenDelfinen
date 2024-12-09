@@ -12,7 +12,7 @@ public class Hold {
     private static final String FILE_PATH_HOLD = "hold.txt";
     private String holdnavn;
     private static final int MAX_DELTAGERE_HOLD = 4;
-
+    //changes 9/12
     public static void main(String[] args) {
     }
 

@@ -11,7 +11,7 @@ public class Resultat {
     private List<String> discipliner;
     private List<Resultat> resultater;
     private MedlemManagement mm = new MedlemManagement();
-
+    //changes 9/12
     private static final String filePath = "traeningsResultater.txt";
 
     public static void main(String[] args) {
