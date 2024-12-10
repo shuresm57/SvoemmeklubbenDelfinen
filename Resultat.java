@@ -30,6 +30,14 @@ public class Resultat {
         this.dato = dato;
     }
 
+    public Resultat(KonkurrenceSvoemmer svoemmer, String medlemsnummer, String disciplin, double tid, String dato) {
+        this.svoemmer = svoemmer;
+        this.disciplin = disciplin;
+        this.tid = tid;
+        this.dato = dato;
+
+    }
+
     public Resultat() {
         resultatMap = new HashMap<>();
     }
@@ -37,6 +45,22 @@ public class Resultat {
     public HashMap<KonkurrenceSvoemmer,List<Resultat>> getResultater() {
         return resultatMap;
     }
+
+    public void printResultater() {
+        for (Map.Entry<KonkurrenceSvoemmer, List<Resultat>> entry : resultatMap.entrySet()) {
+            KonkurrenceSvoemmer svoemmer = entry.getKey(); // Svømmeren (KonkurrenceSvoemmer)
+            List<Resultat> resultater = entry.getValue(); // Resultaterne for svømmeren
+
+            System.out.println("Navn: " + svoemmer.getNavn() + ", Medlemsnr: " + svoemmer.getMedlemsnummer());
+
+            for (Resultat resultat : resultater) {
+                System.out.println("Disciplin: " + resultat.getDisciplin() + ", Resultat: " + resultat.getTid());
+            }
+
+            System.out.println(); // Ny linje efter hver svømmer
+        }
+    }
+
 
     public List<String> getDiscipliner() {
         return discipliner;
@@ -103,8 +127,7 @@ public class Resultat {
             double tid = Double.parseDouble(scanner.nextLine());
 
             Resultat resu = new Resultat((KonkurrenceSvoemmer) medlemToUpdate, valgtDisciplin, tid, dato);
-
-            resultater.add(resu);
+            resultatMap.put(svoemmer, resultater);
             gemResultatTilFil(resu);
             System.out.println("Resultat oprettet: " + resu);
             break;

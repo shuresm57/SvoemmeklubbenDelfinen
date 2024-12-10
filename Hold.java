@@ -29,7 +29,6 @@ public class Hold {
     }
 
     public List<Hold> getHoldListe() {
-        System.out.println(holdListe);
         return holdListe;
     }
 

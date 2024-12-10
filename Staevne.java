@@ -4,7 +4,6 @@ import java.util.*;
 
 public class Staevne {
 
-
     private String dato;
     private String staevneNavn;
 
@@ -20,6 +19,12 @@ public class Staevne {
         Staevne s = new Staevne();
         s.opretStaevne();
     }
+
+    public void printStaevneListe() {
+        FileUtil.loadStaevne(FILE_PATH_STAEVNE,staevneListe);
+        staevneListe.forEach(System.out::println);
+    }
+
 
 
     public Staevne() {

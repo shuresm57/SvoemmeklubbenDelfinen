@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 //changes 9/12
@@ -13,6 +14,12 @@ public class Traener {
     private List<Traener> traenerListe = new ArrayList<>();
     private static final String FILE_PATH_TRAENER = "traenere.txt";
     private MedlemManagement mm = new MedlemManagement();
+    private List<Resultat> resultater = new ArrayList<>();
+
+    public void visResultater(){
+        Resultat resultat = new Resultat();
+        System.out.println(resultater);
+    }
 
     public Traener() {
 
@@ -118,7 +125,7 @@ public class Traener {
 
         switch (option) {
             case 1:
-                mm.visMedlemmer();
+                hold.printHoldListe();
                 break;
             case 2:
                 hold.opretHold();
@@ -131,10 +138,13 @@ public class Traener {
                 FileUtil.sletHold(hold.getFILE_PATH_HOLD());
                 break;
             case 5:
-                System.out.println("Tilføj træningsresultater (ikke implementeret endnu).");
+                System.out.println("Tilføj træningsresultater.");
+                resultat.traeningsResultater();
                 break;
             case 6:
-                System.out.println("Vis træningsresultater (ikke implementeret endnu).");
+                System.out.println("Vis træningsresultater.");
+                resultat.laesResultaterFraFil();
+                resultat.printResultater();
                 break;
             case 7:
                 System.out.println("Opret stævne.");
@@ -148,7 +158,7 @@ public class Traener {
                 break;
             case 0:
                 System.out.println("Programmet afsluttes.");
-                break;
+                System.exit(0);
             default:
                 System.out.println("Ugyldigt valg.");
                 break;

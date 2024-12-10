@@ -70,15 +70,10 @@ public class MedlemManagement {
                 System.out.println("3. Ændre medlemsoplysninger");
                 System.out.println("4. Vis medlemmer");
                 System.out.println("5. Slet medlemmer");
+                System.out.println("9. Log ud");
                 System.out.println("0. Afslut");
-            } else if ("træner".equalsIgnoreCase(rolle)) {
-                System.out.println("\n1. Vis medlemmer");
-                System.out.println("2. Oret hold");
-                System.out.println("3. tilføj deltager til hold");
-                System.out.println("4. Fjern hold");
-                System.out.println("5. Tilføj træningsresultater");
-                System.out.println("6. Vis træningsresultater");
-                System.out.println("0. Afslut");
+            } else if ("traener".equalsIgnoreCase(rolle)) {
+                traener.runTraener();
             } else if ("kasserer".equalsIgnoreCase(rolle)) {
                 kontingent.runKontingent();
             }
@@ -100,13 +95,16 @@ public class MedlemManagement {
                     visMedlemmer();
                 } else if (option == 5) {
                     FileUtil.sletMedlem(FILE_PATH_MEDLEMMER);
+                } else if (option == 9){
+                    System.out.println("Logger ud...");
+                    login();
                 } else if (option == 0) {
                     System.out.println("Programmet afsluttes.");
                     break;
                 } else {
                     System.out.println("Ugyldigt valg.");
                 }
-            } else if ("træner".equalsIgnoreCase(rolle)) {
+            } else if ("traener".equalsIgnoreCase(rolle)) {
                 traener.runTraener();
             } else if ("kasserer".equalsIgnoreCase(rolle)) {
                 kontingent.runKontingent();

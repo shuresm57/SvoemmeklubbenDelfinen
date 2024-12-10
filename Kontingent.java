@@ -5,14 +5,15 @@ import java.util.*;
 
 public class Kontingent {
 
-    private             static final double         UNGDOMS_KONTINGENT      = 1000.0;
-    private             static final double         SENIOR_KONTINGENT       = 1600.0;
-    private             static final double         SENIOR_RABAT            = 0.75;
-    private             static final double         PASSIVT_KONTINGENT      = 500.0;
-    private             List<Medlem>                medlemmerIRestance      = new ArrayList<>();
-    private             MedlemManagement            mm                      = new MedlemManagement();
-    private             Scanner                     scanner                 = new Scanner(System.in);
-    private             static final String         FILE_PATH_RESTANCE      = "medlemmerIRestance.txt";
+    private static final double UNGDOMS_KONTINGENT = 1000.0;
+    private static final double SENIOR_KONTINGENT = 1600.0;
+    private static final double SENIOR_RABAT = 0.75;
+    private static final double PASSIVT_KONTINGENT = 500.0;
+    private List<Medlem> medlemmerIRestance = new ArrayList<>();
+    private MedlemManagement mm = new MedlemManagement();
+    private Scanner scanner = new Scanner(System.in);
+    private static final String FILE_PATH_RESTANCE = "medlemmerIRestance.txt";
+
     //changes 9/12
     public Kontingent() {}
 
@@ -86,61 +87,65 @@ public class Kontingent {
         }
     }
 
-    public void getMedlemmerIRestance(){
-        if(!medlemmerIRestance.isEmpty()){
-            System.out.println("Medlemmer der er i restance:\n");
-            medlemmerIRestance.forEach(System.out::println);
+        public void getMedlemmerIRestance () {
+            if (!medlemmerIRestance.isEmpty()) {
+                System.out.println("Medlemmer der er i restance:\n");
+                medlemmerIRestance.forEach(System.out::println);
+            } else {
+                System.out.println("Ingen medlemmer er i restance.\n");
+            }
+
         }
-        else {
-            System.out.println("Ingen medlemmer er i restance.\n");
-        }
 
-    }
+        public void runKontingent(){
+            FileUtil.loadMedlemmerFromFile(FILE_PATH_RESTANCE, 6, medlemmerIRestance, null);
+            Scanner scanner = new Scanner(System.in);
+            MedlemManagement mm = new MedlemManagement();
 
-    public void runKontingent() {
-        FileUtil.loadMedlemmerFromFile(FILE_PATH_RESTANCE,6,medlemmerIRestance,null);
-        Scanner scanner = new Scanner(System.in);
+            while (true) {
 
-        while (true) {
-
-            System.out.println("Vælg hvad du vil se: ");
-            System.out.println("1. Forventet total kontingent for " + LocalDate.now().getYear());
-            System.out.println("2. Medlemmer i restance");
-            System.out.println("3. Sæt et medlem i restance");
-            System.out.println("4. Slet et medlem fra restance");
-            System.out.println("5. Vis medlemmer");
-            System.out.println("0. Tilbage til hovedmenu");
+                System.out.println("Vælg hvad du vil se: ");
+                System.out.println("1. Forventet total kontingent for " + LocalDate.now().getYear());
+                System.out.println("2. Medlemmer i restance");
+                System.out.println("3. Sæt et medlem i restance");
+                System.out.println("4. Slet et medlem fra restance");
+                System.out.println("5. Vis medlemmer");
+                System.out.println("9. Log ud");
+                System.out.println("0. Afslut");
 
 
-            int valg = scanner.nextInt();
-            scanner.nextLine();
+                int valg = scanner.nextInt();
+                scanner.nextLine();
 
 
-            switch (valg) {
-                case 1:
-                    System.out.println("Totalkontinget for " + LocalDate.now().getYear() + ": ");
-                    System.out.println(totalKontingent());
-                    break;
-                case 2:
-                    getMedlemmerIRestance();
-                    break;
-                case 3:
-                    System.out.println("Indtast medlemsnummer på medlemmet, der skal sættes i restance: ");
-                    tilfoejMedlemTilRestance();
-                    break;
-                case 4:
-                    FileUtil.sletMedlem(FILE_PATH_RESTANCE);
-                    FileUtil.loadMedlemmerFromFile(FILE_PATH_RESTANCE,6,medlemmerIRestance,null);
-                    break;
-                case 5:
-                    System.out.println("Viser alle medlemmer\n");
-                    mm.getMedlemmer().forEach(System.out::println);
-                    break;
-                case 0:
-                    return;
-                default:
-                    System.out.println("Ugyldigt valg.");
-                    break;
+                switch (valg) {
+                    case 1:
+                        totalKontingent();
+                        break;
+                    case 2:
+                        getMedlemmerIRestance();
+                        break;
+                    case 3:
+                        System.out.println("Indtast medlemsnummer på medlemmet, der skal sættes i restance: ");
+                        tilfoejMedlemTilRestance();
+                        break;
+                    case 4:
+                        FileUtil.sletMedlem(FILE_PATH_RESTANCE);
+                        FileUtil.loadMedlemmerFromFile(FILE_PATH_RESTANCE, 6, medlemmerIRestance, null);
+                        break;
+                    case 5:
+                        System.out.println("Viser alle medlemmer\n");
+                        mm.getMedlemmer().forEach(System.out::println);
+                        break;
+                    case 9:
+                        System.out.println("Logger ud...");
+                        mm.login();
+                    case 0:
+                        System.exit(0);
+                    default:
+                        System.out.println("Ugyldigt valg.");
+                        break;
+                }
             }
         }
     }
