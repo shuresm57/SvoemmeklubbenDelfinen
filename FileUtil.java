@@ -70,8 +70,10 @@ public class FileUtil {
     public static void saveStaevne(String filSti, List<Staevne> staevneListe) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filSti, true))) {
             for (Staevne staevne : staevneListe) {
+                String newLine = System.getProperty("line.separator");
                 String staevneNavn = (staevne.getStaevneNavn() != null) ? staevne.getStaevneNavn() : "intet freaking staevne dud";
-                writer.write(staevne.getStaevneNavn() + "," + staevne.getDato() + "," + staevne.getValgteDiscipliner() + "," + staevne.getTider());
+                // Fjerner kommaet mellem disciplinerne og tiderne
+                writer.write(staevne.getStaevneNavn() + "," + staevne.getDato() + newLine + staevne.getValgteDiscipliner() + newLine + staevne.getTider() + newLine);
                 writer.newLine();
             }
             System.out.println("Stævne gemt til fil.");
@@ -79,21 +81,36 @@ public class FileUtil {
             System.out.println("Fejl ved skrivning af stævne til fil: " + e.getMessage());
         }
     }
-/*
+
 
 
     public static void loadStaevne(String filSti, List<Staevne> staevneListe) {
-        try(BufferedReader reader = new BufferedReader(new FileReader(filSti), true){
+        try (BufferedReader reader = new BufferedReader(new FileReader(filSti))) {
             String line;
-            for(Staevne staevne : staevneListe) {
 
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",", 4); // Split kun på de første 3 kommaer for at bevare deltagere korrekt
+                if (data.length == 4) {
+                    // Datafelter
+                    String navn = data[0].trim();
+                    String dato = data[1].trim();
+                    List<String> discipliner = Arrays.asList(data[2].replace("[", "").replace("]", "").split(";"));
+
+                    List<String> deltagere = Arrays.asList(data[3]
+                            .replace("[", "")
+                            .replace("]", "")
+                            .split("\\.,")); // Split på ".,"
+
+
+                    Staevne currentStaevne = new Staevne(navn, dato, discipliner, deltagere);
+                    staevneListe.add(currentStaevne);
+                }
             }
         } catch (IOException e) {
             System.out.println("Fejl ved læsning fra fil: " + e.getMessage());
         }
     }
 
-*/
 
 
     public static void writeTraenerToFile(String filePath, List<Traener> traenerListe) {

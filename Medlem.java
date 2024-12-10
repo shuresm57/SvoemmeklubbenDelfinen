@@ -83,11 +83,11 @@ public abstract class Medlem {
         this.email = email;
     }
 
-    public boolean erSenior(){
+    public boolean erOver65(){
         return getAlder() >= 65;
     }
 
-    public boolean erJunior(){
+    public boolean erUnder18(){
         return getAlder() < 18;
     }
 

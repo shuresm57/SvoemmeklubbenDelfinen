@@ -18,52 +18,72 @@ public class Kontingent {
 
     public static void main(String[] args) {
         Kontingent k = new Kontingent();
-        System.out.println(k.totalKontingent());
-    }
-
-    public double totalKontingent() {
+        MedlemManagement mm = new MedlemManagement();
         mm.loadMedlemmerFromFile();
-        double total = 0.0;
+        k.kontingentListe();
+        k.totalKontingent();
 
-        for (Medlem medlem : mm.getMedlemmer()) {
-            if (medlem instanceof PassivtMedlem) {
-                total += PASSIVT_KONTINGENT;
-            } else if (medlem.erJunior()) {
-                total += UNGDOMS_KONTINGENT;
-            } else if (medlem.erSenior()) {
-                total += SENIOR_KONTINGENT * SENIOR_RABAT;
-            } else {
-                total += SENIOR_KONTINGENT;
-            }
-        }
-        return total;
+
     }
+
+    public double beregnKontingent(Medlem medlem) {
+        if (medlem instanceof PassivtMedlem) {
+            return PASSIVT_KONTINGENT;
+        } else if (medlem.erUnder18()) {
+            return UNGDOMS_KONTINGENT;
+        } else if (medlem.erOver65()) {
+            return SENIOR_KONTINGENT * SENIOR_RABAT;
+        } else {
+            return SENIOR_KONTINGENT;
+        }
+    }
+
+    public void totalKontingent() {
+        double total = 0.0;
+        for (Medlem medlem : mm.getMedlemmer()) {
+            total += beregnKontingent(medlem);
+        }
+        System.out.println("Total kontingent for " + LocalDate.now().getYear() + " " + total);
+    }
+
+    public void kontingentListe() {
+        mm.loadMedlemmerFromFile();
+        for(Medlem medlem : mm.getMedlemmer()) {
+            double kontingent = beregnKontingent(medlem);
+            System.out.println("Navn: " + medlem.getNavn() + " " + "Kontingent: " + kontingent +
+                    " Har betalt kontingent for " + LocalDate.now().getYear() + ": " + medlem.harBetalt());
+        }
+        totalKontingent();
+    }
+
 
     public void tilfoejMedlemTilRestance() {
         String medlemsnummer = scanner.nextLine();
-        boolean findesAllerede = false;
         Medlem medlemToUpdate = null;
         for (Medlem m : mm.getMedlemmer()) {
             if (m.getMedlemsnummer().equalsIgnoreCase(medlemsnummer)) {
                 medlemToUpdate = m;
-                break;
+                System.out.println("Medlem fundet: " + medlemToUpdate);
+
+                if (medlemToUpdate instanceof KonkurrenceSvoemmer ks) {
+                    ks.setBetalt(false);
+                    medlemmerIRestance.add(ks);
+                } else if (medlemToUpdate instanceof Motionist mo) {
+                    mo.setBetalt(false);
+                    medlemmerIRestance.add(mo);
+                } else if (medlemToUpdate instanceof PassivtMedlem pm) {
+                    pm.setBetalt(false);
+                    medlemmerIRestance.add(pm);
+                }
+
+                FileUtil.saveMedlemmer(FILE_PATH_RESTANCE, medlemmerIRestance, false);
+                System.out.println("Medlem tilføjet til restance: " + medlemToUpdate);
+                break; // Stop loopet, når medlemmet er fundet og opdateret
             }
-            else{
-                break;
-            }
-        } if (medlemToUpdate instanceof KonkurrenceSvoemmer ks) {
-            ks.setBetalt(false);
-            medlemmerIRestance.add(ks);
-        } else if (medlemToUpdate instanceof Motionist mo) {
-            mo.setBetalt(false);
-            medlemmerIRestance.add(mo);
-        } else if (medlemToUpdate instanceof PassivtMedlem pm) {
-            pm.setBetalt(false);
-            medlemmerIRestance.add(pm);
         }
-        else if (findesAllerede) {
+        if (medlemToUpdate == null) {
+            System.out.println("Medlem ikke fundet: " + medlemsnummer);
         }
-        FileUtil.saveMedlemmer(FILE_PATH_RESTANCE,medlemmerIRestance,false);
     }
 
     public void getMedlemmerIRestance(){
@@ -124,5 +144,5 @@ public class Kontingent {
             }
         }
     }
-}
+
 

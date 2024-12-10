@@ -40,7 +40,7 @@ public class MedlemManagement {
             System.out.print("Indtast brugernavn: ");
             String username = console.readLine();
 
-            char[] passwordArray = console.readPassword("Indtast kodeord:");
+            char[] passwordArray = console.readPassword("Indtast kodeord: ");
             String password = new String(passwordArray);
 
             if (username.equals(FORMAND_USERNAME) && password.equals(FORMAND_PASSWORD)) {

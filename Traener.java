@@ -94,9 +94,25 @@ public class Traener {
     }
 
     public void runTraener(){
+        MedlemManagement mm = new MedlemManagement();
+        Hold hold = new Hold();
+        Staevne staevne = new Staevne();
+        Resultat resultat = new Resultat();
+        resultat.laesResultaterFraFil();
+
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Vælg en mulighed: ");
+        System.out.println("1. Vis Hold");
+        System.out.println("2. Oret hold");
+        System.out.println("3. tilføj deltager til hold");
+        System.out.println("4. Fjern hold");
+        System.out.println("5. Tilføj træningsresultater");
+        System.out.println("6. Vis træningsresultater");
+        System.out.println("7. Opret stævne");
+        System.out.println("8. Vis stævneresultater");
+        System.out.println("9. Log ud");
+        System.out.println("0. Afslut");
+
         int option = scanner.nextInt();
         scanner.nextLine();
 
@@ -119,6 +135,16 @@ public class Traener {
                 break;
             case 6:
                 System.out.println("Vis træningsresultater (ikke implementeret endnu).");
+                break;
+            case 7:
+                System.out.println("Opret stævne.");
+                staevne.opretStaevne();
+            case 8:
+                System.out.println("Vis stævneresultater. (virker ikke endnu)");
+                staevne.printStaevneListe();
+            case 9:
+                System.out.println("Logger ud...");
+                mm.login();
                 break;
             case 0:
                 System.out.println("Programmet afsluttes.");

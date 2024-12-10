@@ -59,9 +59,9 @@ public class Staevne {
 
     public void tilfoejKSframedlemtilKs() {
         mm.loadMedlemmerFromFile();
-        for (String ks : mm.getMedlemsNumre()) {
-            if (ks.substring(0, 2).equalsIgnoreCase("KS")) {
-                kssvoemmer.add(ks);
+        for (Medlem ks : mm.getMedlemmer()) {
+            if (ks instanceof KonkurrenceSvoemmer) {
+                kssvoemmer.add(ks.getMedlemsnummer() + " " + ks.getNavn());
             }
         }
     }
@@ -114,7 +114,6 @@ public class Staevne {
             }
             while (true) {
                 System.out.println("Vælg svømmer (indtast nummer). Tast 0 for at afslutte:");
-                System.out.println(tider);
                 for (int i = 0; i < kssvoemmer.size(); i++) {
                     System.out.println((i + 1) + ". " + kssvoemmer.get(i));
                 }
@@ -129,7 +128,8 @@ public class Staevne {
                         System.out.println("Svømmer tilføjet: " + valgtSvoemmer);
                         System.out.println("Tilføj tid til svømmer: ");
                         double tid = scanner.nextDouble();
-                        tider.add(("Svømmer: " + valgtSvoemmer + ", tid for svømmer: " + String.valueOf(tid)) + " sekunder.");
+                        //indsæt catch for hvis man kommer til at skrive et punktum
+                        tider.add(("\n" +"Svømmer: " + valgtSvoemmer + " tid for svømmer: " + String.valueOf(tid)) + " sekunder."+"\n");
                     } else {
                         System.out.println("Svømmeren er allerede valgt.");
                     }
@@ -143,6 +143,12 @@ public class Staevne {
             System.out.println("Stævne oprettet: " + nytStaevne.getStaevneNavn());
             break;
         }
+    }
+
+    @Override
+    public String toString() {
+        return staevneNavn;
+
     }
 }
 

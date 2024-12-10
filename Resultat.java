@@ -9,7 +9,8 @@ public class Resultat {
     private KonkurrenceSvoemmer svoemmer;
     private Traener traener;
     private List<String> discipliner;
-    private List<Resultat> resultater;
+    private List<Resultat> resultater = new ArrayList<>();
+    private HashMap<KonkurrenceSvoemmer,List<Resultat>> resultatMap;
     private MedlemManagement mm = new MedlemManagement();
     //changes 9/12
     private static final String filePath = "traeningsResultater.txt";
@@ -17,7 +18,9 @@ public class Resultat {
     public static void main(String[] args) {
         Resultat r = new Resultat();
         //r.traeningsResultater();
-        r.visTop5Resultater();
+        //r.visTop5Resultater();
+        r.laesResultaterFraFil();
+        r.printResultater();
     }
 
     public Resultat(KonkurrenceSvoemmer svoemmer, String disciplin, double tid, String dato) {
@@ -28,11 +31,11 @@ public class Resultat {
     }
 
     public Resultat() {
-        resultater = new ArrayList<>();
+        resultatMap = new HashMap<>();
     }
 
-    public List<Resultat> getResultater() {
-        return resultater;
+    public HashMap<KonkurrenceSvoemmer,List<Resultat>> getResultater() {
+        return resultatMap;
     }
 
     public List<String> getDiscipliner() {
@@ -120,7 +123,7 @@ public class Resultat {
     }
 
     public void laesResultaterFraFil() {
-        resultater = new ArrayList<>();
+        resultatMap = new HashMap<>();
         MedlemManagement mm = new MedlemManagement();
         mm.loadMedlemmerFromFile();
 
@@ -140,7 +143,7 @@ public class Resultat {
                     // Hvis svømmeren ikke findes, skal du måske håndtere det
                     if (svoemmer != null) {
                         Resultat resultat = new Resultat(svoemmer, disciplin, tid, dato);
-                        resultater.add(resultat);
+                        resultatMap.computeIfAbsent(svoemmer, k -> new ArrayList<>()).add(resultat);
                     } else {
                         System.out.println("Svømmer med medlemsnummer " + medlemsnummer + " ikke fundet.");
                     }
@@ -161,9 +164,11 @@ public class Resultat {
         for (String disciplin : discipliner) {
             List<Resultat> disciplinResultater = new ArrayList<>();
 
-            for (Resultat resultat : resultater) {
-                if (resultat.getDisciplin().equalsIgnoreCase(disciplin)) {
-                    disciplinResultater.add(resultat);
+            for (Map.Entry<KonkurrenceSvoemmer, List<Resultat>> entry : resultatMap.entrySet()) {
+                List<Resultat> resultater = entry.getValue();
+                Resultat resu = new Resultat();
+                if (resu.getDisciplin().equalsIgnoreCase(disciplin)) {
+                    disciplinResultater.add(resu);
                 }
             }
 

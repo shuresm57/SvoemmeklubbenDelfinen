@@ -33,6 +33,11 @@ public class Hold {
         return holdListe;
     }
 
+    public void printHoldListe() {
+        FileUtil.loadHoldFromFile(FILE_PATH_HOLD,holdListe);
+        holdListe.forEach(System.out::println);
+    }
+
     public String getHoldnavn() {
         return holdnavn;
     }

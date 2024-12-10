@@ -1,0 +1,53 @@
+Delfinstaevnet ,10-12-2024,[Butterfly],[Svømmer: KS004, tid for svømmer: 20.0 sekunder., Svømmer: KS005, tid for svømmer: 30.0 sekunder., Svømmer: KS001, tid for svømmer: 40.0 sekunder., Svømmer: KS006, tid for svømmer: 50.0 sekunder.]
+valdefars stævne 10000m ,21-05-2025,
+[][Rygcrawl],[Svømmer: KS004 valde, tid for svømmer: 1000.0 sekunder., Svømmer: KS005 mathias, tid for svømmer: 2000.0 sekunder., Svømmer: KS001 Roar, tid for svømmer: 3000.0 sekunder., Svømmer: KS006 kalle, tid for svømmer: 4000.0 sekunder.]
+28,12-24-2024,
+[][Brystsvømning],[Svømmer: KS004 valde, tid for svømmer: 33.0 sekunder.]
+
+Oles stævne 4km,04-04-2000,
+[] [Butterfly],[Svømmer: KS005 mathias, tid for svømmer: 200.0 sekunder., Svømmer: KS001 Roar, tid for svømmer: 1000.0 sekunder., Svømmer: KS004 valde, tid for svømmer: 20000.0 sekunder.]
+
+Oles mega lille stævne 1m,04-04-1000,
+ [Crawl],[Svømmer: KS004 valde, tid for svømmer: 2.0 sekunder., Svømmer: KS001 Roar, tid for svømmer: 5.0 sekunder.]
+
+Mathias mega lange lorte stævne 1m,04-04-1000,
+[Crawl],[Svømmer: KS004 valde, tid for svømmer: 2.0 sekunder., Svømmer: KS005 mathias, tid for svømmer: 3.0 sekunder., Svømmer: KS001 Roar, tid for svømmer: 4.0 sekunder.]
+
+valdemars ostestævne 100m ,21-05-2025,
+[Brystsvømning],[Svømmer: KS004 valde, tid for svømmer: 10.0 sekunder.
+, Svømmer: KS005 mathias, tid for svømmer: 200.0 sekunder.
+, Svømmer: KS001 Roar, tid for svømmer: 4040040.0 sekunder.
+, Svømmer: KS006 kalle, tid for svømmer: 434323.0 sekunder.
+]
+
+Nikos junior stævne :3 <3,04-04-2000,
+[Butterfly],[
+Svømmer: KS005 mathias, tid for svømmer: 3.0 sekunder.
+, 
+Svømmer: KS006 kalle, tid for svømmer: 5.0 sekunder.
+, 
+Svømmer: KS004 valde, tid for svømmer: 2.0 sekunder.
+, 
+Svømmer: KS001 Roar, tid for svømmer: 2.0 sekunder.
+]
+
+Markus' Senior drenge :D,04-04-0111
+[Rygcrawl],[
+Svømmer: KS004 valde, tid for svømmer: 0.0 sekunder.
+, 
+Svømmer: KS005 mathias, tid for svømmer: 4.0 sekunder.
+, 
+Svømmer: KS001 Roar, tid for svømmer: 4.0 sekunder.
+]
+
+Mathias Senior kvinder ;),04-04-2000
+[Butterfly][
+Svømmer: KS005 mathias, tid for svømmer: 3.0 sekunder.
+, 
+Svømmer: KS006 kalle, tid for svømmer: 3.0 sekunder.
+, 
+Svømmer: KS004 valde, tid for svømmer: 4.0 sekunder.
+, 
+Svømmer: KS001 Roar, tid for svømmer: 2.0 sekunder.
+]
+
