@@ -4,28 +4,46 @@ import java.util.Scanner;
 
 public class Hold {
 
-    private Traener traener;
-    private String ugeDag;
-    private int tid;
-    private List<KonkurrenceSvoemmer> deltagere = new ArrayList<>();
-    private List<Hold> holdListe = new ArrayList<>();
-    private static final String FILE_PATH_HOLD = "hold.txt";
-    private String holdnavn;
-    private static final int MAX_DELTAGERE_HOLD = 4;
-    //changes 9/12
-    public static void main(String[] args) {
+
+    private                 String                          holdnavn;
+    private                 String                          ugeDag;
+    private                 int                             tid;
+
+    private                 List<KonkurrenceSvoemmer>       deltagere       = new ArrayList<>();
+    private                 List<Hold>                      holdListe       = new ArrayList<>();
+    private                 List<KonkurrenceSvoemmer>       KsvoemmerListe = new ArrayList<>();
+
+    private                 Traener                         traener;
+    private                 KonkurrenceSvoemmer             ks;
+
+    private static final    String                          FILE_PATH_HOLD  = "hold.txt";
+
+    public void iniKS(){
+        MedlemManagement mm = new MedlemManagement();
+        mm.loadMedlemmerFromFile();
+        for(Medlem medlem : mm.getMedlemmer()){
+            if (medlem instanceof KonkurrenceSvoemmer){
+                KsvoemmerListe.add((KonkurrenceSvoemmer)medlem);
+            }
+        }
     }
+
 
     public Hold() {
         this.traener = new Traener();
     }
 
-    public Hold(String holdnavn, Traener traener, String ugeDag, int tid) {
+    public Hold(String holdnavn, Traener traener, String ugeDag, int tid, List<KonkurrenceSvoemmer> deltagere) {
         this.holdnavn = holdnavn;
         this.traener = traener;
         this.ugeDag = ugeDag;
         this.tid = tid;
+        this.deltagere = deltagere;
         holdListe.add(this); // Fjern dette, hvis det ikke er nødvendigt
+    }
+
+    public Hold(String holdnavn) {
+        this.holdnavn = holdnavn;
     }
 
     public List<Hold> getHoldListe() {
@@ -34,7 +52,9 @@ public class Hold {
 
     public void printHoldListe() {
         FileUtil.loadHoldFromFile(FILE_PATH_HOLD,holdListe);
-        holdListe.forEach(System.out::println);
+        for(Hold hold : holdListe){
+            System.out.println(hold.getHoldnavn());
+        }
     }
 
     public String getHoldnavn() {
@@ -43,6 +63,13 @@ public class Hold {
 
     public List<KonkurrenceSvoemmer> getDeltagere() {
         return deltagere;
+    }
+
+    public void addDeltager(KonkurrenceSvoemmer svoemmer) {
+        deltagere.add(svoemmer);
+    }
+    public void removeDeltager(KonkurrenceSvoemmer svoemmer) {
+        deltagere.remove(svoemmer);
     }
 
     public Traener getTraener() {
@@ -59,6 +86,10 @@ public class Hold {
 
     public String getFILE_PATH_HOLD() {
         return FILE_PATH_HOLD;
+    }
+
+    public void loadHoldFromFile(){
+        FileUtil.loadHoldFromFile(FILE_PATH_HOLD,holdListe);
     }
 
     public int getTid() {
@@ -80,7 +111,7 @@ public class Hold {
     public void opretHold() {
         Scanner scanner = new Scanner(System.in);
 
-        FileUtil.loadTraenerFromFile(FILE_PATH_HOLD,traener.getTraenerListe());
+        FileUtil.loadTraenerFromFile(traener.getFilePathTraener(),traener.getTraenerListe());
 
         System.out.println("Indtast navn på hold der skal oprettes: ");
         String navn = scanner.nextLine();
@@ -96,6 +127,24 @@ public class Hold {
         int traenerValg = Integer.parseInt(scanner.nextLine());
         Traener valgtTraener = traener.getTraenerListe().get(traenerValg - 1);
 
+        List<KonkurrenceSvoemmer> svoemmere = new ArrayList<>();
+
+        while(true){
+            System.out.println("Vælg deltager (indtast nummer). Tast 0 for at afslutte. ");
+            for(int i = 0; i < KsvoemmerListe.size(); i++){
+                System.out.println((i + 1) + ". " + KsvoemmerListe.get(i).getNavn());
+            }
+            int deltagerValg = scanner.nextInt();
+            if(deltagerValg == 0) break;
+
+            if(deltagerValg > 0 && deltagerValg <= KsvoemmerListe.size()){
+                KonkurrenceSvoemmer valgtDeltager = KsvoemmerListe.get(deltagerValg - 1);
+                if(!svoemmere.contains(valgtDeltager)){
+                    svoemmere.add(valgtDeltager);
+                    System.out.println(valgtDeltager.getNavn() + " tilføjet til hold");
+                }
+            }
+        }
 
         String ugeDag = "";
         while (ugeDag.isEmpty()) {
@@ -137,45 +186,16 @@ public class Hold {
             }
         }
 
-        Hold nytHold = new Hold(navn, valgtTraener, ugeDag, tid);
+        Hold nytHold = new Hold(navn, valgtTraener, ugeDag, tid, svoemmere);
         holdListe.add(nytHold);
         FileUtil.saveHold(FILE_PATH_HOLD,holdListe);
         System.out.println("Hold oprettet: " + nytHold.getHoldnavn());
     }
 
-    public void opdaterHold (String holdnavn, String nyUgeDag,int nyTid, Traener nyTraener){
-            for (Hold hold : getHoldListe()) {
-                if (hold.getHoldnavn().equals(holdnavn)) {
-                    hold.setUgeDag(nyUgeDag);
-                    hold.setTid(nyTid);
-                    hold.setTraener(nyTraener);
-                    FileUtil.saveHold(FILE_PATH_HOLD,holdListe);
-                    System.out.println("Holdet er blevet opdateret og gemt.");
-                    return;
-                }
-            }
-            System.out.println("Hold med navnet " + holdnavn + " blev ikke fundet.");
-        }
 
-    public void fjernHold (String holdnavn){
-            Hold holdToRemove = null;
-            for (Hold hold : holdListe) {
-                if (hold.getHoldnavn().equals(holdnavn)) {
-                    holdToRemove = hold;
-                    break;
-                }
-            }
-            if (holdToRemove != null) {
-                holdListe.remove(holdToRemove);
-                FileUtil.saveHold(FILE_PATH_HOLD,holdListe);
-                System.out.println("Hold fjernet og gemt til fil.");
-            } else {
-                System.out.println("Hold med navnet " + holdnavn + " blev ikke fundet.");
-            }
-        }
 
-        @Override
-        public String toString () {
+    @Override
+    public String toString () {
             return "Hold: " + holdnavn + ", Træner: " + (traener != null ? traener.getNavn() : "Ingen træner") + ", Ugedag: " + ugeDag + ", Tid: " + tid + ", Deltagere: " + deltagere;
         }
     }

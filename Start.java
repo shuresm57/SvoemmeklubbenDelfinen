@@ -3,18 +3,16 @@ import java.util.Scanner;
 
 public class Start {
 
-    private MedlemManagement medManagement = new MedlemManagement();
-    private Kontingent kontingent = new Kontingent();
-    private Traener traener = new Traener();
+    private                 MedlemManagement    medManagement       = new MedlemManagement();
+    private                 Kontingent          kontingent          = new Kontingent();
+    private                 Traener             traener             = new Traener();
 
-    private static final String FORMAND_USERNAME = "formand";
-    private static final String FORMAND_PASSWORD = "1234";
-
-    private static final String TRAENER_USERNAME = "traener";
-    private static final String TRAENER_PASSWORD = "1234";
-
-    private static final String KASSERER_USERNAME = "kasserer";
-    private static final String KASSERER_PASSWORD = "1234";
+    private static final    String              FORMAND_USERNAME    = "formand";
+    private static final    String              FORMAND_PASSWORD    = "formand";
+    private static final    String              TRAENER_USERNAME    = "traener";
+    private static final    String              TRAENER_PASSWORD    = "traener";
+    private static final    String              KASSERER_USERNAME   = "kasserer";
+    private static final    String              KASSERER_PASSWORD   = "kasserer";
 
     public Start (){}
 
@@ -50,6 +48,7 @@ public class Start {
             System.out.println("\nVelkommen, " + rolle + "!");
             if ("formand".equalsIgnoreCase(rolle)) {
                 medManagement.runMedlemManagement();
+                continue;
             } else if ("traener".equalsIgnoreCase(rolle)) {
                 traener.runTraener();
             } else if ("kasserer".equalsIgnoreCase(rolle)) {

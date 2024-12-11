@@ -1,4 +1,4 @@
-Mathias' unge svømmere,Mathias,Tirsdag,10
-Mathias' snapchatgruppe,Mathias,Onsdag,1230
-Jonas' Junior Hold,Valdemar,Torsdag,18
-svoemmehold,Valdemar,Mandag,10
+nikos hold;Victor,Mandag,10[Medlemsnummer: KS001, Navn: Victor, Fødselsdato: 1995-03-15, Telefon: 30123456, Email: victor@swim.dk, Medlemsnummer: KS002, Navn: Louis, Fødselsdato: 1998-07-24, Telefon: 31234567, Email: louis@swim.dk]
+mathias hold;Sophia,Tirsdag,15[Medlemsnummer: KS003, Navn: Clara, Fødselsdato: 2002-11-11, Telefon: 32345678, Email: clara@swim.dk, Medlemsnummer: KS004, Navn: Sophia, Fødselsdato: 2001-06-08, Telefon: 33456789, Email: sophia@swim.dk]
+oscar hold;Liam,Onsdag,20[Medlemsnummer: KS005, Navn: Lucas, Fødselsdato: 1999-12-12, Telefon: 34567890, Email: lucas@swim.dk, Medlemsnummer: KS006, Navn: Maya, Fødselsdato: 1994-04-04, Telefon: 35678901, Email: maya@swim.dk]
+hannah hold;Emma,Fredag,12[Medlemsnummer: KS007, Navn: Liam, Fødselsdato: 2005-09-09, Telefon: 36789012, Email: liam@swim.dk, Medlemsnummer: KS008, Navn: Hannah, Fødselsdato: 2003-10-10, Telefon: 37890123, Email: hannah@swim.dk]

@@ -1,3 +1,10 @@
-Mathias,21,30569972,mathias@mortensenoutlookjijsiodfjsdfd.dk
-Valdemar,22,22222222,22222
-Niko,23,33333333,nikos@niko.dk
+Niko,23,45839201,niko@gmail.com
+Sara,28,52913847,sara@hotmail.com
+Jonas,35,61748290,jonas@gmail.com
+Emma,30,74639281,emma@hotmail.com
+Oliver,27,82349156,oliver@gmail.com
+Sofia,32,93457283,sofia@hotmail.com
+Lucas,29,38572614,lucas@gmail.com
+Freja,25,74651289,freja@hotmail.com
+Victor,31,29018374,victor@gmail.com
+Klara,26,83594720,klara@hotmail.com

@@ -1,26 +1,19 @@
-import java.io.*;
 import java.util.*;
 
 public class Resultat {
 
-    private String disciplin;
-    private double tid;
-    private String dato;
-    private KonkurrenceSvoemmer svoemmer;
-    private Traener traener;
-    private Resultat resultat;
-    private List<String> discipliner;
-    private List<Resultat> resultater = new ArrayList<>();
-    private HashMap<KonkurrenceSvoemmer,List<Resultat>> resultatMap;
-    private MedlemManagement mm = new MedlemManagement();
-    private static final String FILE_PATH_RESULTAT = "traeningsResultater.txt";
+    private                 String                                          disciplin;
+    private                 String                                          dato;
+    private                 double                                          tid;
 
-    public static void main(String[] args) {
-        Resultat r = new Resultat();
-        //r.traeningsResultater();
-        //r.visTop5Resultater();
-        r.printResultater();
-    }
+    private                 List<String>                                    discipliner;
+    private                 List<Resultat>                                  resultater          = new ArrayList<>();
+    private                 HashMap<KonkurrenceSvoemmer,List<Resultat>>     resultatMap;
+
+    private                 KonkurrenceSvoemmer                             svoemmer;
+    private                 MedlemManagement                                mm                  = new MedlemManagement();
+
+    private static final    String                                          FILE_PATH_RESULTAT  = "traeningsResultater.txt";
 
     public Resultat(KonkurrenceSvoemmer svoemmer, String disciplin, double tid, String dato) {
         this.svoemmer = svoemmer;
@@ -45,11 +38,11 @@ public class Resultat {
         return resultatMap;
     }
 
-    public void printResultater() {
+    public void printTraeningsResultater() {
         FileUtil.laesResultaterFraFil(FILE_PATH_RESULTAT,resultatMap);
         for (Map.Entry<KonkurrenceSvoemmer, List<Resultat>> entry : resultatMap.entrySet()) {
-            KonkurrenceSvoemmer svoemmer = entry.getKey(); // Svømmeren (KonkurrenceSvoemmer)
-            List<Resultat> resultater = entry.getValue(); // Resultaterne for svømmeren
+            KonkurrenceSvoemmer svoemmer = entry.getKey();
+            List<Resultat> resultater = entry.getValue();
 
             System.out.println("Navn: " + svoemmer.getNavn() + ", Medlemsnr: " + svoemmer.getMedlemsnummer());
 
@@ -57,7 +50,7 @@ public class Resultat {
                 System.out.println("Disciplin: " + resultat.getDisciplin() + ", Resultat: " + resultat.getTid());
             }
 
-            System.out.println(); // Ny linje efter hver svømmer
+            System.out.println();
         }
     }
 
@@ -138,27 +131,32 @@ public class Resultat {
     }
 
     public void visTop5Resultater() {
-        mm.loadMedlemmerFromFile();
-        FileUtil.laesResultaterFraFil(FILE_PATH_RESULTAT,resultatMap);
-        List<String> discipliner = Arrays.asList("Butterfly", "Crawl", "Rygcrawl", "Brystsvømning");
-        for (String disciplin : discipliner) {
-            List<Resultat> disciplinResultater = new ArrayList<>();
 
+        mm.loadMedlemmerFromFile();
+        FileUtil.laesResultaterFraFil(FILE_PATH_RESULTAT, resultatMap);
+
+        List<String> discipliner = Arrays.asList("Butterfly", "Crawl", "Rygcrawl", "Brystsvømning");
+
+        for (String disciplin : discipliner) {
+
+            List<Resultat> disciplinResultater = new ArrayList<>();
             for (Map.Entry<KonkurrenceSvoemmer, List<Resultat>> entry : resultatMap.entrySet()) {
                 List<Resultat> resultater = entry.getValue();
-                Resultat resu = new Resultat();
-                if (resu.getDisciplin().equalsIgnoreCase(disciplin)) {
-                    disciplinResultater.add(resu);
+                for (Resultat resu : resultater) {
+                    if (resu.getDisciplin().equalsIgnoreCase(disciplin)) {
+                        disciplinResultater.add(resu);
+                    }
                 }
             }
 
             disciplinResultater.sort(Comparator.comparingDouble(Resultat::getTid));
 
-            System.out.println("Top 5 resultater for " + disciplin);
+            System.out.println("Top 5 resultater for " + disciplin + ":");
             for (int i = 0; i < Math.min(5, disciplinResultater.size()); i++) {
                 Resultat resu = disciplinResultater.get(i);
                 System.out.println((i + 1) + ". " + resu.getSvoemmer().getNavn() + " - Tid: " + resu.getTid() + " sekunder");
             }
+            System.out.println();
         }
     }
 

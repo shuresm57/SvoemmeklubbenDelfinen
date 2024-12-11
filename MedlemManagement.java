@@ -2,15 +2,16 @@ import java.io.*;
 import java.util.*;
 import java.time.*;
 import java.time.format.*;
+
 //commit 5/12
 public class MedlemManagement {
 
     // Filstien til at gemme og læse medlemmer fra.
-    private static final            String                  FILE_PATH_MEDLEMMER         = "medlemmer.txt";
+    private static final String FILE_PATH_MEDLEMMER = "medlemmer.txt";
 
     // Liste til at gemme medlemmer.
-    private                         List<Medlem>            medlemmer                   = new ArrayList<>();
-    private                         List<String>            medlemsNumre                = new ArrayList<>();
+    private List<Medlem> medlemmer = new ArrayList<>();
+    private List<String> medlemsNumre = new ArrayList<>();
 
     public List<Medlem> getMedlemmer() {
         return medlemmer;
@@ -20,7 +21,7 @@ public class MedlemManagement {
         return medlemsNumre;
     }
 
-    public void runMedlemManagement(){
+    public void runMedlemManagement() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("\n1. Opret medlem");
@@ -53,10 +54,12 @@ public class MedlemManagement {
                 break;
             case 9:
                 System.out.println("Logger ud...");
-                Start.login();
+                Start st = new Start();
+                st.run();
                 break;
             case 0:
                 System.out.println("Programmet afsluttes.");
+                System.exit(0);
                 break;
             default:
                 System.out.println("Ugyldigt valg.");
@@ -110,6 +113,19 @@ public class MedlemManagement {
         }
     }
 
+    public List<KonkurrenceSvoemmer> listeAfSvoemmere() {
+        if (medlemmer.isEmpty()) {
+            loadMedlemmerFromFile();
+        }
+        List<KonkurrenceSvoemmer> svoemmere = new ArrayList<>(medlemmer.size());
+        for (Medlem medlem : medlemmer) {
+            if (medlem instanceof KonkurrenceSvoemmer) {
+                svoemmere.add((KonkurrenceSvoemmer) medlem);
+            }
+        }
+        return svoemmere;
+    }
+
     public KonkurrenceSvoemmer findKonkurrenceSvoemmerByMedlemsnummer(String medlemsnummer) {
         loadMedlemmerFromFile(); // Sørger for, at medlemmerne er indlæst.
 
@@ -124,8 +140,8 @@ public class MedlemManagement {
     }
 
     //hjælpemetode
-    public void loadMedlemmerFromFile(){
-        FileUtil.loadMedlemmerFromFile(FILE_PATH_MEDLEMMER,7,medlemmer,medlemsNumre);
+    public void loadMedlemmerFromFile() {
+        FileUtil.loadMedlemmerFromFile(FILE_PATH_MEDLEMMER, 6, medlemmer, medlemsNumre);
     }
 
     // Metode til at oprette og gemme et medlem
@@ -174,7 +190,7 @@ public class MedlemManagement {
             if (medlem != null) {
                 medlemmer.add(medlem);
                 medlemsNumre.add(medlemsnummer);
-                FileUtil.saveMedlemmer(FILE_PATH_MEDLEMMER,medlemmer, true);
+                FileUtil.saveMedlemmer(FILE_PATH_MEDLEMMER, medlemmer, true);
                 System.out.println("Medlem oprettet: " + medlem.getMedlemsnummer());
                 break;
             } else {
@@ -183,15 +199,15 @@ public class MedlemManagement {
         }
     }
 
-    // Metode til at opdatere et medlem
     public void opdaterMedlem() {
         Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Indtast medlemsnummer på medlemmet, der skal opdateres: ");
-        String medlemsnummer = scanner.nextLine();
-
-
+        FileUtil.loadMedlemmerFromFile(FILE_PATH_MEDLEMMER, 6, medlemmer, medlemsNumre);
         Medlem medlemToUpdate = null;
+
+        System.out.println("Indtast medlemsnummer på medlemmet, der skal opdateres:");
+        String medlemsnummer = scanner.nextLine().trim();
+
+        // Find medlemmet i listen
         for (Medlem medlem : medlemmer) {
             if (medlem.getMedlemsnummer().equalsIgnoreCase(medlemsnummer)) {
                 medlemToUpdate = medlem;
@@ -201,40 +217,45 @@ public class MedlemManagement {
 
         if (medlemToUpdate == null) {
             System.out.println("Medlem med medlemsnummer " + medlemsnummer + " blev ikke fundet.");
-            return;  // Stop hvis medlemmet ikke findes
+            return;
         }
-        while (true) {
-            System.out.println("Vælg hvad du vil opdatere: ");
-            System.out.println("1. Navn");
-            System.out.println("2. Telefon");
-            System.out.println("3. Email");
-            System.out.println("0. Tilbage");
 
-            int valg = scanner.nextInt();
-            scanner.nextLine();  // Forbruger den sidste linjefeed.
+        System.out.println("Medlem med nummeret er fundet: " + medlemToUpdate.getNavn());
+        System.out.println("Hvad vil du opdatere?");
+        System.out.println("1. Navn");
+        System.out.println("2. Telefon nummer");
+        System.out.println("3. Email");
 
+        int option = scanner.nextInt();
+        scanner.nextLine(); // Forbrug newline
 
-            if (valg == 1) {
+        // Opdater det nødvendige felt baseret på brugerens valg
+        switch (option) {
+            case 1:
                 System.out.println("Indtast nyt navn: ");
-                String nytNavn = scanner.nextLine();
-                medlemToUpdate.setNavn(nytNavn);
-            } else if (valg == 2) {
-                System.out.println("Indtast nyt telefonnummer: ");
-                String nyTelefon = scanner.nextLine();
-                medlemToUpdate.setTelefon(nyTelefon);
-            } else if (valg == 3) {
+                String navn = scanner.nextLine().trim();
+                medlemToUpdate.setNavn(navn);
+                break;
+            case 2:
+                System.out.println("Indtast nyt telefon nummer: ");
+                String telefon = scanner.nextLine().trim();
+                medlemToUpdate.setTelefon(telefon);
+                break;
+            case 3:
                 System.out.println("Indtast ny email: ");
-                String nyEmail = scanner.nextLine();
-                medlemToUpdate.setEmail(nyEmail);
-
-            } else if (valg == 0) {
-                System.out.println("Tilbage til hovedmenu.");
-                return;
-            } else {
+                String email = scanner.nextLine().trim();
+                medlemToUpdate.setEmail(email);
+                break;
+            default:
                 System.out.println("Ugyldigt valg.");
-                FileUtil.saveMedlemmer(FILE_PATH_MEDLEMMER,medlemmer, true);
-                System.out.println("Medlemmet er opdateret.");
-            }
+                return;
         }
+
+        // Opdater medlemmet i filen
+        FileUtil.opdaterMedlem(FILE_PATH_MEDLEMMER, medlemToUpdate);
+        System.out.println("Medlemmet er blevet opdateret: " + medlemToUpdate.getNavn());
     }
+
+
+
 }

@@ -1,12 +1,13 @@
 import java.io.*;
+import java.sql.Array;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class FileUtil {
-    //changes 9/12
-    private List<KonkurrenceSvoemmer> konksvoemmer = new ArrayList<>();
 
 
-    public static void readEksisterendeMedlemsNumre(String filePath, Set<String> eksisterendeMedlemsNumre) {
+    public static void readEksisterendeMedlemsNumre(String filePath, List<String> eksisterendeMedlemsNumre) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String linje;
             while ((linje = reader.readLine()) != null) {
@@ -23,12 +24,14 @@ public class FileUtil {
     }
 
     public static void saveMedlemmer(String filePath, List<Medlem> liste, boolean tjekMedlemsNr) {
-        Set<String> eksisterendeMedlemsNumre = new HashSet<>();
+        List<String> eksisterendeMedlemsNumre = new ArrayList<>();
         readEksisterendeMedlemsNumre(filePath, eksisterendeMedlemsNumre);
-
-        List<Medlem> nyeMedlemmer = liste.stream()
-                .filter(m -> !eksisterendeMedlemsNumre.contains(m.getMedlemsnummer()))
-                .toList();
+        List<Medlem> nyeMedlemmer = new ArrayList<>();
+        for (Medlem medlem : liste) {
+            if (!eksisterendeMedlemsNumre.contains(medlem.getMedlemsnummer())) {
+                nyeMedlemmer.add(medlem);
+            }
+        }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             for (Medlem medlem : nyeMedlemmer) {
@@ -115,8 +118,7 @@ public class FileUtil {
         }
     }
 
-    public static void laesResultaterFraFil(String filePath, HashMap<KonkurrenceSvoemmer,List<Resultat>> resultatMap) {
-        resultatMap = new HashMap<>();
+    public static void laesResultaterFraFil(String filePath, HashMap<KonkurrenceSvoemmer, List<Resultat>> resultatMap) {
         MedlemManagement mm = new MedlemManagement();
         mm.loadMedlemmerFromFile();
 
@@ -125,16 +127,16 @@ public class FileUtil {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length == 4) {
-                    String medlemsnummer = data[0];
-                    String disciplin = data[1];
-                    double tid = Double.parseDouble(data[2]);
-                    String dato = data[3];
+                    String medlemsnummer = data[0].trim();
+                    String disciplin = data[1].trim();
+                    double tid = Double.parseDouble(data[2].trim());
+                    String dato = data[3].trim();
 
                     // Find svømmer ud fra medlemsnummer
                     KonkurrenceSvoemmer svoemmer = mm.findKonkurrenceSvoemmerByMedlemsnummer(medlemsnummer);
 
-                    // Hvis svømmeren ikke findes, skal du måske håndtere det
                     if (svoemmer != null) {
+                        // Opret resultat og tilføj det til resultatMap
                         Resultat resultat = new Resultat(svoemmer, disciplin, tid, dato);
                         resultatMap.computeIfAbsent(svoemmer, k -> new ArrayList<>()).add(resultat);
                     } else {
@@ -144,6 +146,81 @@ public class FileUtil {
             }
         } catch (IOException e) {
             System.out.println("Fejl ved læsning af resultater fra fil: " + e.getMessage());
+        }
+    }
+
+    public static void opdaterMedlem(String filePath, Medlem opdateretMedlem) {
+        // Indlæs medlemsliste fra fil
+        MedlemManagement mm = new MedlemManagement();
+        mm.loadMedlemmerFromFile();
+        List<Medlem> medlemsListe = mm.getMedlemmer();
+        boolean medlemFundet = false;
+
+        // Opdater medlem
+        for (int i = 0; i < medlemsListe.size(); i++) {
+            Medlem medlem = medlemsListe.get(i);
+            if (medlem.getMedlemsnummer().equalsIgnoreCase(opdateretMedlem.getMedlemsnummer())) {
+                medlemsListe.set(i, opdateretMedlem);
+                medlemFundet = true;
+                break;
+            }
+        }
+
+        if (!medlemFundet) {
+            System.out.println("Medlem med medlemsnummer " + opdateretMedlem.getMedlemsnummer() + " blev ikke fundet.");
+            return;
+        }
+
+        // Skriv listen tilbage til filen
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, false))) {
+            for (Medlem medlem : medlemsListe) {
+                String linje = String.format("%s,%s,%s,%s,%s,%s",
+                        medlem.getMedlemsnummer(), medlem.getMedlemstype(),
+                        medlem.getNavn(), medlem.getFoedselsdato(),
+                        medlem.getTelefon(), medlem.getEmail());
+                writer.write(linje);
+                writer.newLine();
+            }
+            System.out.println("Medlem med medlemsnummer " + opdateretMedlem.getMedlemsnummer() + " er blevet opdateret.");
+        } catch (IOException e) {
+            System.out.println("Fejl ved opdatering af medlem i fil: " + e.getMessage());
+        }
+    }
+
+    public static void opdaterHold(String filePath, Hold opdateretHold) {
+        Hold hold = new Hold();
+        hold.loadHoldFromFile();
+        List<Hold> holdListe = hold.getHoldListe();
+        boolean holdFundet = false;
+
+        // Opdater medlem
+        for (int i = 0; i < hold.getHoldListe().size(); i++) {
+            Hold hold1 = hold.getHoldListe().get(i);
+            if (hold.getHoldnavn().equalsIgnoreCase(opdateretHold.getHoldnavn())) {
+                holdListe.set(i, opdateretHold);
+                holdFundet = true;
+                break;
+            }
+        }
+
+        if (!holdFundet) {
+            System.out.println("Hold med navnet " + opdateretHold.getHoldnavn() + " blev ikke fundet.");
+            return;
+        }
+        //String holdnavn, Traener traener, String ugeDag, int tid, List<KonkurrenceSvoemmer> deltagere
+        // Skriv listen tilbage til filen
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, false))) {
+            for (Hold hold1 : holdListe) {
+                String linje = String.format("%s,%s,%s,%s,%s",
+                        hold.getHoldnavn(), hold.getTraener(),
+                        hold.getUgeDag(), hold.getTid(),
+                        hold.getDeltagere());
+                writer.write(linje);
+                writer.newLine();
+            }
+            System.out.println("Hold med navnet: " + opdateretHold.getHoldnavn() + " er blevet opdateret.");
+        } catch (IOException e) {
+            System.out.println("Fejl ved opdatering af hold i fil: " + e.getMessage());
         }
     }
 
@@ -196,47 +273,23 @@ public class FileUtil {
         }
     }
 
-    public static void loadHoldFromFile (String filePath, List<Hold> holdListe) {
-
-        Traener traener = null;
-
+    public static void loadHoldFromFile(String filePath, List<Hold> holdListe) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            Hold currentHold = null;
+            String linje;
 
-            // Sørg for, at traener er initialiseret korrekt
-            if (traener == null) {
-                traener = new Traener();
-                traener.loadFromFile(); // Indlæs trænere
+            while ((linje = reader.readLine()) != null) {
+                String[] data = linje.split(";");
+
+                // Kontrollér, at linjen har det forventede format
+
+                    System.out.println(data[0]);
+
             }
-
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length == 4) {
-                    Traener matchedTraener = null;
-
-                    // Find træneren i trænerlisten
-                    for (Traener t : traener.getTraenerListe()) {
-                        if (t.getNavn().equals(data[1])) {
-                            matchedTraener = t;
-                            break;
-                        }
-                    }
-
-                    // Opret nyt hold med matched træner
-                    currentHold = new Hold(data[0], matchedTraener, data[2], Integer.parseInt(data[3]));
-                    holdListe.add(currentHold);
-                } else if (currentHold != null) {
-                    // Tilføj deltagere til holdet
-                    KonkurrenceSvoemmer deltagere = new KonkurrenceSvoemmer(line, "", "", "", "", "");
-                    currentHold.getDeltagere().add(deltagere);
-                }
-            }
-            System.out.println("Hold indlæst fra fil.");
         } catch (IOException e) {
-            System.out.println("Fejl ved indlæsning af hold fra fil: " + e.getMessage());
+            throw new RuntimeException("Fejl ved indlæsning af fil: " + e.getMessage(), e);
         }
     }
+
 
     public static void loadTraenerFromFile(String filePath, List<Traener> traenerListe) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -244,7 +297,12 @@ public class FileUtil {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length == 4) {
-                    Traener traener = new Traener(data[0], Integer.parseInt(data[1]), data[2], data[3]);
+                    String navn = data[0];
+                    String alder = data[1];
+                    String telf = data[2];
+                    String email = data[3];
+
+                    Traener traener = new Traener(navn, alder, telf, email);
                     traenerListe.add(traener);
                 }
             }
@@ -259,25 +317,30 @@ public class FileUtil {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                String navnOgDato = line;
-                String[] headerData = navnOgDato.split(",", 2);
+                String[] headerData = line.split(",", 2);
                 if (headerData.length < 2) continue;
 
                 String navn = headerData[0].trim();
                 String dato = headerData[1].trim();
 
                 String disciplinerLine = reader.readLine().trim();
-                List<String> discipliner = Arrays.asList(
-                        disciplinerLine.replace("[", "").replace("]", "").split(",")
-                );
+                List<String> discipliner = new ArrayList<>();
+                for (String disciplin : disciplinerLine.replace("[", "").replace("]", "").split(",")) {
+                    disciplin = disciplin.trim();
+                    if (!disciplin.isEmpty()) {
+                        discipliner.add(disciplin);
+                    }
+                }
 
                 List<String> deltagere = new ArrayList<>();
                 String tiderLine;
                 while ((tiderLine = reader.readLine()) != null && !tiderLine.equals("]")) {
-                    deltagere.add(tiderLine.trim());
+                    String trimmedLine = tiderLine.trim();
+                    if (!trimmedLine.isEmpty()) {
+                        deltagere.add(trimmedLine);
+                    }
                 }
 
-                // Opret Staevne-objekt og tilføj til listen
                 Staevne currentStaevne = new Staevne(navn, dato, discipliner, deltagere);
                 staevneListe.add(currentStaevne);
             }

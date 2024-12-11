@@ -7,14 +7,17 @@ import java.time.format.DateTimeFormatter;
 
 public abstract class Medlem {
     //changes 9/12
-    protected String medlemsnummer;
-    protected String navn;
-    protected String foedselsdato;
-    protected LocalDateTime medlemsdato;
-    protected boolean harBetaltKontingent;
-    protected String telefon;
-    protected String email;
-    protected List<Medlem> medlemmer = new ArrayList<>();
+    protected           String              medlemsnummer;
+    protected           String              navn;
+    protected           String              foedselsdato;
+    protected           String              telefon;
+    protected           String              email;
+
+    protected           boolean             harBetaltKontingent;
+
+    protected           LocalDateTime       medlemsdato;
+
+    protected           List<Medlem>        medlemmer = new ArrayList<>();
 
 
     public Medlem() {

@@ -4,12 +4,15 @@ import java.util.Scanner;
 //changes 9/12
 public class Traener {
 
+    private                 String                 alder;
+
     private                 String              navn;
-    private                 int                 alder;
     private                 String              telefon;
     private                 String              email;
+
     private                 List<Traener>       traenerListe            = new ArrayList<>();
     private                 List<Resultat>      resultater              = new ArrayList<>();
+
     private static final    String              FILE_PATH_TRAENER       = "traenere.txt";
 
 
@@ -22,7 +25,7 @@ public class Traener {
 
     }
 
-    public Traener(String navn, int alder, String telefon, String email) {
+    public Traener(String navn, String alder, String telefon, String email) {
         this.navn = navn;
         this.alder = alder;
         this.telefon = telefon;
@@ -45,12 +48,16 @@ public class Traener {
         this.navn = navn;
     }
 
-    public int getAlder() {
+    public String getAlder() {
         return alder;
     }
 
-    public void setAlder(int alder) {
+    public void setAlder(String alder) {
         this.alder = alder;
+    }
+
+    public String getFilePathTraener(){
+        return FILE_PATH_TRAENER;
     }
 
     public String getTelefon() {
@@ -76,7 +83,7 @@ public class Traener {
             String navn = scanner.nextLine();
 
             System.out.println("Indtast " + navn + "'s alder:");
-            int alder = Integer.parseInt(scanner.nextLine());
+            String alder = scanner.nextLine();
 
             System.out.println("Indtast telefon");
             String telefon = scanner.nextLine();
@@ -98,6 +105,7 @@ public class Traener {
     }
 
     public void runTraener(){
+
         MedlemManagement mm = new MedlemManagement();
         Hold hold = new Hold();
         Staevne staevne = new Staevne();
@@ -106,13 +114,12 @@ public class Traener {
 
         System.out.println("1. Vis Hold");
         System.out.println("2. Opret hold");
-        System.out.println("3. tilføj deltager til hold");
-        System.out.println("4. Fjern hold");
-        System.out.println("5. Tilføj træningsresultater");
-        System.out.println("6. Vis træningsresultater");
-        System.out.println("7. Opret stævne");
-        System.out.println("8. Vis stævneresultater");
-        System.out.println("9. Log ud");
+        System.out.println("3. Fjern hold");
+        System.out.println("4. Tilføj træningsresultater");
+        System.out.println("5. Vis træningsresultater og top 5");
+        System.out.println("6. Opret stævne");
+        System.out.println("7. Vis stævneresultater");
+        System.out.println("8. Log ud");
         System.out.println("0. Afslut");
 
         int option = scanner.nextInt();
@@ -126,9 +133,6 @@ public class Traener {
                 hold.opretHold();
                 break;
             case 3:
-                System.out.println("Tilføj deltager til hold (ikke implementeret endnu).");
-                break;
-            case 4:
                 System.out.println("Fjern hold.");
                 FileUtil.sletHold(hold.getFILE_PATH_HOLD());
                 break;
@@ -136,9 +140,9 @@ public class Traener {
                 System.out.println("Tilføj træningsresultater.");
                 resultat.traeningsResultater();
                 break;
-            case 6:
-                System.out.println("Vis træningsresultater.");
-                resultat.printResultater();
+            case 5:
+                resultat.printTraeningsResultater();
+                resultat.visTop5Resultater();
                 break;
             case 7:
                 System.out.println("Opret stævne.");
@@ -150,7 +154,8 @@ public class Traener {
                 break;
             case 9:
                 System.out.println("Logger ud...");
-                Start.login();
+                Start st = new Start();
+                st.run();
                 break;
             case 0:
                 System.out.println("Programmet afsluttes.");

@@ -101,7 +101,6 @@ public class Kontingent {
     public void runKontingent(){
             FileUtil.loadMedlemmerFromFile(FILE_PATH_RESTANCE, 6, medlemmerIRestance, null);
             Scanner scanner = new Scanner(System.in);
-            MedlemManagement mm = new MedlemManagement();
 
             while (true) {
 

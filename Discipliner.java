@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Discipliner {
     //changes 9/12
-    private  List<String>discipliner = new ArrayList<>();
+    private         List<String>        discipliner         = new ArrayList<>();
 
     public Discipliner(){
         discipliner.add("Butterfly");

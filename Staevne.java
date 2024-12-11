@@ -5,21 +5,19 @@ import java.util.*;
 
 public class Staevne {
 
-    private String dato;
-    private String staevneNavn;
 
-    private static final String FILE_PATH_STAEVNE = "staevneResultater.txt";
-    private List<String> tider = new ArrayList<>();
-    private List<String> deltagere = new ArrayList<>();
-    private List<String> kssvoemmer = new ArrayList<>();
-    private List<Staevne> staevneListe = new ArrayList<>();
-    private List<String> valgteDiscipliner = new ArrayList<>();
-    MedlemManagement mm = new MedlemManagement();
-    //changes 9/12
-    public static void main(String[] args) {
-        Staevne s = new Staevne();
-        s.opretStaevne();
-    }
+    private                 String              dato;
+    private                 String              staevneNavn;
+
+    private                 List<String>        tider                   = new ArrayList<>();
+    private                 List<String>        deltagere               = new ArrayList<>();
+    private                 List<String>        kssvoemmer              = new ArrayList<>();
+    private                 List<Staevne>       staevneListe            = new ArrayList<>();
+    private                 List<String>        valgteDiscipliner       = new ArrayList<>();
+
+    private                 MedlemManagement    mm                      = new MedlemManagement();
+
+    private static final    String              FILE_PATH_STAEVNE       = "staevneResultater.txt";
 
     public Staevne() {
     }
@@ -39,6 +37,9 @@ public class Staevne {
         this.tider = tider;
     }
 
+    public String getNavn(){
+        return staevneNavn;
+    }
 
     public List<String> getTider() {
         return tider;
@@ -66,7 +67,12 @@ public class Staevne {
 
     public void printStaevneListe() {
         FileUtil.loadStaevne(FILE_PATH_STAEVNE,staevneListe);
-        staevneListe.forEach(System.out::println);
+        for (Staevne staevne : staevneListe) {
+            System.out.println("Navn: " + staevne.getStaevneNavn());
+            System.out.println("Dato: " + staevne.getDato());
+            System.out.println("Disciplin: " + staevne.getValgteDiscipliner());
+            System.out.println("Tider: " + staevne.getTider());
+        }
     }
 
     public void tilfoejKSframedlemtilKs() {
@@ -85,7 +91,7 @@ public class Staevne {
         List<String> staevneDeltagere = new ArrayList<>();
 
         while (true) {
-            System.out.println("Indtast navn og meter på stævnet, der skal oprettes: ");
+            System.out.println("Indtast byen på stævnet, der skal oprettes: ");
             String navn = scanner.nextLine();
 
             System.out.println("Indtast dato for afholdelse af stævne (dd-MM-yyyy):");
@@ -105,8 +111,10 @@ public class Staevne {
                 if (disciplinValg > 0 && disciplinValg <= d.getDiscipliner().size()) {
                     String valgtDisciplin = d.getDiscipliner().get(disciplinValg - 1);
                     if (!valgteDiscipliner.contains(valgtDisciplin)) {
-                        valgteDiscipliner.add(valgtDisciplin);
-                        System.out.println("Disciplin tilføjet: " + valgtDisciplin);
+                        System.out.println("Indtast længden på disciplinen i meter: ");
+                        String laengde = scanner.nextLine();
+                        valgteDiscipliner.add(valgtDisciplin + " - " + laengde);
+                        System.out.println("Disciplin tilføjet: " + valgtDisciplin + " - " + laengde);
                         break; // Gå videre til næste punkt i while-løkken efter valg af disciplin
                     } else {
                         System.out.println("Disciplinen er allerede valgt.");
@@ -115,6 +123,7 @@ public class Staevne {
                 } else {
                     System.out.println("Ugyldigt valg. Prøv igen.");
                 }
+
             }
             while (true) {
                 System.out.println("Vælg svømmer (indtast nummer). Tast 0 for at afslutte:");

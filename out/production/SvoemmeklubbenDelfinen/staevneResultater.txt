@@ -1,52 +1,17 @@
-hejhej 100,20-20-2000
-[Butterfly]
-[
-
-Svømmer: KS004 valde tid for svømmer: 2.0 sekunder.
-
-
-Svømmer: KS005 mathias tid for svømmer: 1.0 sekunder.
-
-
-Svømmer: KS001 Roar tid for svømmer: 2.0 sekunder.
-
-]
-valde 100,20-20-2000
-[Butterfly]
-[
-
-Svømmer: KS005 mathias tid for svømmer: 2.0 sekunder.
-
-
-Svømmer: KS004 valde tid for svømmer: 3.0 sekunder.
-
-]
-valde 100,20-20-2000
-Butterfly
-[
-
-Svømmer: KS004 valde tid for svømmer: 2.0 sekunder.
-
-
-Svømmer: KS005 mathias tid for svømmer: 1.0 sekunder.
-
-
-Svømmer: KS001 Roar tid for svømmer: 1.0 sekunder.
-
-
-Svømmer: KS006 kalle tid for svømmer: 1.0 sekunder.
-
-]
-valde 200,02-20-2000
-Butterfly
+Kolding,20-20-2000
+Butterfly - 100m
 [
     
 Svømmer: KS004 valde tid for svømmer: 2.0 sekunder.
 
     
-Svømmer: KS005 mathias tid for svømmer: 1.0 sekunder.
+Svømmer: KS005 mathias tid for svømmer: 3.0 sekunder.
 
+]
+Randers,09-11-2001
+Butterfly - 200
+[
     
-Svømmer: KS001 Roar tid for svømmer: 1.0 sekunder.
+Svømmer: KS006 kalle tid for svømmer: 23.4 sekunder.
 
 ]
