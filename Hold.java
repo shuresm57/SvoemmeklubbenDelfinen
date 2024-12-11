@@ -110,6 +110,7 @@ public class Hold {
 
     public void opretHold() {
         Scanner scanner = new Scanner(System.in);
+        iniKS();
 
         FileUtil.loadTraenerFromFile(traener.getFilePathTraener(),traener.getTraenerListe());
 

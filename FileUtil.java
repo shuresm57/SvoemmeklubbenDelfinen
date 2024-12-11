@@ -53,16 +53,8 @@ public class FileUtil {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             for (Hold hold : holdListe) {
                 String traenerNavn = (hold.getHoldnavn() != null) ? hold.getTraener().getNavn() : "Ingen træner";
-                writer.write(hold.getHoldnavn() + "," + traenerNavn + "," + hold.getUgeDag() + "," + hold.getTid());
+                writer.write(hold.getHoldnavn() + ";" + traenerNavn + "," + hold.getUgeDag() + "," + hold.getTid() + hold.getDeltagere());
                 writer.newLine();
-                List<String> eksisterendeNavne = new ArrayList<>();
-                for (KonkurrenceSvoemmer deltagere : hold.getDeltagere()) {
-                    if (!eksisterendeNavne.contains(deltagere.getNavn())) {
-                        writer.write(deltagere.getNavn());
-                        writer.newLine();
-                        eksisterendeNavne.add(deltagere.getNavn());
-                    }
-                }
             }
             System.out.println("Hold gemt til fil.");
         } catch (IOException e) {
@@ -252,8 +244,7 @@ public class FileUtil {
                         medlem = switch (medlemstype) {
                             case "KonkurrenceSvoemmer" ->
                                     new KonkurrenceSvoemmer(medlemsnummer, navn, foedselsdato, telefon, email);
-                            case "Motionist" ->
-                                    new Motionist(medlemsnummer, navn, foedselsdato, telefon, email);
+                            case "Motionist" -> new Motionist(medlemsnummer, navn, foedselsdato, telefon, email);
                             case "PassivtMedlem" ->
                                     new PassivtMedlem(medlemsnummer, navn, foedselsdato, telefon, email);
                             default -> medlem;
@@ -403,9 +394,7 @@ public class FileUtil {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath));
              BufferedWriter writer = new BufferedWriter(new FileWriter(tempfil))) {
-
             String currentLine;
-
             while ((currentLine = reader.readLine()) != null) {
                 if (currentLine.toLowerCase().contains(holdNavn.toLowerCase())) {
                     medlemFundet = true;

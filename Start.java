@@ -14,7 +14,8 @@ public class Start {
     private static final    String              KASSERER_USERNAME   = "kasserer";
     private static final    String              KASSERER_PASSWORD   = "kasserer";
 
-    public Start (){}
+    public Start() {
+    }
 
     public static String login() {
         Console console = System.console();
@@ -41,33 +42,33 @@ public class Start {
     public void run() {
         medManagement.loadMedlemmerFromFile();
         Scanner scanner = new Scanner(System.in);
+        Kontingent k = new Kontingent();
+        k.alreadyLoaded();
 
         String rolle = login();
 
         while (true) {
-            System.out.println("\nVelkommen, " + rolle + "!");
+            System.out.println("\nMenu for " + rolle + ", vælg en mulighed:");
             if ("formand".equalsIgnoreCase(rolle)) {
                 medManagement.runMedlemManagement();
                 continue;
             } else if ("traener".equalsIgnoreCase(rolle)) {
                 traener.runTraener();
+                continue;
             } else if ("kasserer".equalsIgnoreCase(rolle)) {
                 kontingent.runKontingent();
+                continue;
             }
 
             System.out.print("Vælg en mulighed: ");
             scanner.nextLine();
 
-            // Håndter muligheder baseret på rolle med if-else
-            if ("formand".equalsIgnoreCase(rolle)) {
-                medManagement.runMedlemManagement();
-            } else if ("traener".equalsIgnoreCase(rolle)) {
-                traener.runTraener();
-            } else if ("kasserer".equalsIgnoreCase(rolle)) {
-                kontingent.runKontingent();
-            }
         }
+
     }
+
+
+
 
 
 }

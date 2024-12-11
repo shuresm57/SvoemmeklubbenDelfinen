@@ -103,8 +103,6 @@ public class Kontingent {
             Scanner scanner = new Scanner(System.in);
 
             while (true) {
-
-                System.out.println("Vælg hvad du vil se: ");
                 System.out.println("1. Forventet total kontingent for " + LocalDate.now().getYear());
                 System.out.println("2. Medlemmer i restance");
                 System.out.println("3. Sæt et medlem i restance");
@@ -138,7 +136,8 @@ public class Kontingent {
                         break;
                     case 9:
                         System.out.println("Logger ud...");
-                        Start.login();
+                        Start st = new Start();
+                        st.run();
                     case 0:
                         System.exit(0);
                     default:

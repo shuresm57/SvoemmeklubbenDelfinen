@@ -27,7 +27,7 @@ public abstract class Medlem {
     public Medlem(String medlemsnummer, String navn, String foedselsdato, String telefon, String email, String medlemsdato) {
         this.medlemsnummer = medlemsnummer;
         this.navn = navn;
-        this.foedselsdato = LocalDate.parse(foedselsdato).toString();
+        this.foedselsdato = foedselsdato;
         this.telefon = telefon;
         this.email = email;
         this.medlemsdato = LocalDateTime.now();

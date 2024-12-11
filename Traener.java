@@ -136,7 +136,7 @@ public class Traener {
                 System.out.println("Fjern hold.");
                 FileUtil.sletHold(hold.getFILE_PATH_HOLD());
                 break;
-            case 5:
+            case 4:
                 System.out.println("Tilføj træningsresultater.");
                 resultat.traeningsResultater();
                 break;
@@ -144,15 +144,15 @@ public class Traener {
                 resultat.printTraeningsResultater();
                 resultat.visTop5Resultater();
                 break;
-            case 7:
+            case 6:
                 System.out.println("Opret stævne.");
                 staevne.opretStaevne();
                 break;
-            case 8:
+            case 7:
                 System.out.println("Vis stævner");
                 staevne.printStaevneListe();
                 break;
-            case 9:
+            case 8:
                 System.out.println("Logger ud...");
                 Start st = new Start();
                 st.run();

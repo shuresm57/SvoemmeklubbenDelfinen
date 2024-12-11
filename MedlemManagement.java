@@ -25,10 +25,9 @@ public class MedlemManagement {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("\n1. Opret medlem");
-        System.out.println("2. Gem medlemmer til fil");
-        System.out.println("3. Ændre medlemsoplysninger");
-        System.out.println("4. Vis medlemmer");
-        System.out.println("5. Slet medlemmer");
+        System.out.println("2. Ændre medlemsoplysninger");
+        System.out.println("3. Vis medlemmer");
+        System.out.println("4. Slet medlemmer");
         System.out.println("9. Log ud");
         System.out.println("0. Afslut");
 
@@ -41,15 +40,12 @@ public class MedlemManagement {
                 opretMedlem();
                 break;
             case 2:
-                FileUtil.saveMedlemmer(FILE_PATH_MEDLEMMER, medlemmer, true);
-                break;
-            case 3:
                 opdaterMedlem();
                 break;
-            case 4:
+            case 3:
                 visMedlemmer();
                 break;
-            case 5:
+            case 4:
                 FileUtil.sletMedlem(FILE_PATH_MEDLEMMER);
                 break;
             case 9:
