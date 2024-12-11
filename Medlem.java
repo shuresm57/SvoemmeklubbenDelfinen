@@ -6,14 +6,14 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 public abstract class Medlem {
-    //changes 9/12
+
     protected           String              medlemsnummer;
     protected           String              navn;
     protected           String              foedselsdato;
     protected           String              telefon;
     protected           String              email;
 
-    protected           boolean             harBetaltKontingent;
+    protected           boolean             harBetaltKontingent = true;
 
     protected           LocalDateTime       medlemsdato;
 
@@ -42,7 +42,7 @@ public abstract class Medlem {
         this.email = email;
         medlemsdato = LocalDateTime.now();
     }
-    //commit 5/12
+
     public abstract String getMedlemstype();
 
 

@@ -1,1 +1,1 @@
-PM004,PassivtMedlem,Henry,1975-06-15,43456789,henry@passiv.dk
+KS001,KonkurrenceSvoemmer,Victor,1995-03-15,30123456,victor@swim.dk

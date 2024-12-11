@@ -104,9 +104,9 @@ public class Staevne {
                 }
 
                 int disciplinValg = scanner.nextInt();
-                scanner.nextLine(); // Forbrug newline karakteren
+                scanner.nextLine();
 
-                if (disciplinValg == 0) break; // Afslut valg af discipliner
+                if (disciplinValg == 0) break;
 
                 if (disciplinValg > 0 && disciplinValg <= d.getDiscipliner().size()) {
                     String valgtDisciplin = d.getDiscipliner().get(disciplinValg - 1);
@@ -115,10 +115,10 @@ public class Staevne {
                         String laengde = scanner.nextLine();
                         valgteDiscipliner.add(valgtDisciplin + " - " + laengde);
                         System.out.println("Disciplin tilføjet: " + valgtDisciplin + " - " + laengde);
-                        break; // Gå videre til næste punkt i while-løkken efter valg af disciplin
+                        break;
                     } else {
                         System.out.println("Disciplinen er allerede valgt.");
-                        break; // Gå videre til næste punkt i while-løkken selv hvis disciplinen er allerede valgt
+                        break;
                     }
                 } else {
                     System.out.println("Ugyldigt valg. Prøv igen.");
@@ -132,7 +132,7 @@ public class Staevne {
                 }
 
                 int svoemmerValg = scanner.nextInt();
-                if (svoemmerValg == 0) break; // Afslut valg af discipliner
+                if (svoemmerValg == 0) break;
 
                 if (svoemmerValg > 0 && svoemmerValg <= kssvoemmer.size()) {
                     String valgtSvoemmer = kssvoemmer.get(svoemmerValg - 1);
@@ -141,7 +141,6 @@ public class Staevne {
                         System.out.println("Svømmer tilføjet: " + valgtSvoemmer);
                         System.out.println("Tilføj tid til svømmer: ");
                         double tid = scanner.nextDouble();
-                        //indsæt catch for hvis man kommer til at skrive et punktum
                         tider.add(("\n" +"Svømmer: " + valgtSvoemmer + " tid for svømmer: " + String.valueOf(tid)) + " sekunder."+"\n");
                     } else {
                         System.out.println("Svømmeren er allerede valgt.");

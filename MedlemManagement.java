@@ -6,10 +6,10 @@ import java.time.format.*;
 //commit 5/12
 public class MedlemManagement {
 
-    // Filstien til at gemme og læse medlemmer fra.
+
     private static final String FILE_PATH_MEDLEMMER = "medlemmer.txt";
 
-    // Liste til at gemme medlemmer.
+
     private List<Medlem> medlemmer = new ArrayList<>();
     private List<String> medlemsNumre = new ArrayList<>();
 
@@ -36,7 +36,6 @@ public class MedlemManagement {
 
         switch (option) {
             case 1:
-                //loadMedlemmerFromFile();
                 opretMedlem();
                 break;
             case 2:
@@ -75,7 +74,7 @@ public class MedlemManagement {
             throw new IllegalArgumentException("Ugyldig medlemstype: " + medlemstype);
         }
 
-        // Bestem næste ledige nummer for den pågældende kode
+
         int naesteNummer = 1;
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH_MEDLEMMER))) {
             String linje;
@@ -123,7 +122,7 @@ public class MedlemManagement {
     }
 
     public KonkurrenceSvoemmer findKonkurrenceSvoemmerByMedlemsnummer(String medlemsnummer) {
-        loadMedlemmerFromFile(); // Sørger for, at medlemmerne er indlæst.
+        loadMedlemmerFromFile();
 
         for (Medlem medlem : medlemmer) {
             if (medlem instanceof KonkurrenceSvoemmer && medlem.getMedlemsnummer().equals(medlemsnummer)) {
@@ -132,15 +131,13 @@ public class MedlemManagement {
         }
 
         System.out.println("Ingen konkurrencesvømmer fundet med medlemsnummer: " + medlemsnummer);
-        return null; // Returner null, hvis ingen matcher.
+        return null;
     }
 
-    //hjælpemetode
     public void loadMedlemmerFromFile() {
         FileUtil.loadMedlemmerFromFile(FILE_PATH_MEDLEMMER, 6, medlemmer, medlemsNumre);
     }
 
-    // Metode til at oprette og gemme et medlem
     public void opretMedlem() {
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -150,7 +147,6 @@ public class MedlemManagement {
             medlemstype = scanner.nextLine().trim();
 
             String medlemsnummer = genererMedlemsnummer(medlemstype);
-            // Bed brugeren om at indtaste oplysninger for medlemmet
             System.out.println("Indtast navn: ");
             String navn = scanner.nextLine();
             String foedselsdato = null;
@@ -170,7 +166,6 @@ public class MedlemManagement {
             System.out.println("Indtast email: ");
             String email = scanner.nextLine();
 
-            // Opret medlemmet baseret på medlemstype
             Medlem medlem = null;
 
             if ("1".equalsIgnoreCase(medlemstype)) {
@@ -182,7 +177,6 @@ public class MedlemManagement {
 
             }
 
-            // Tilføj medlemmet til listen
             if (medlem != null) {
                 medlemmer.add(medlem);
                 medlemsNumre.add(medlemsnummer);
@@ -203,7 +197,7 @@ public class MedlemManagement {
         System.out.println("Indtast medlemsnummer på medlemmet, der skal opdateres:");
         String medlemsnummer = scanner.nextLine().trim();
 
-        // Find medlemmet i listen
+
         for (Medlem medlem : medlemmer) {
             if (medlem.getMedlemsnummer().equalsIgnoreCase(medlemsnummer)) {
                 medlemToUpdate = medlem;
@@ -223,9 +217,8 @@ public class MedlemManagement {
         System.out.println("3. Email");
 
         int option = scanner.nextInt();
-        scanner.nextLine(); // Forbrug newline
+        scanner.nextLine();
 
-        // Opdater det nødvendige felt baseret på brugerens valg
         switch (option) {
             case 1:
                 System.out.println("Indtast nyt navn: ");
@@ -247,7 +240,6 @@ public class MedlemManagement {
                 return;
         }
 
-        // Opdater medlemmet i filen
         FileUtil.opdaterMedlem(FILE_PATH_MEDLEMMER, medlemToUpdate);
         System.out.println("Medlemmet er blevet opdateret: " + medlemToUpdate.getNavn());
     }

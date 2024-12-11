@@ -91,7 +91,7 @@ public class FileUtil {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write(resultat.getSvoemmer().getMedlemsnummer() + "," + resultat.getDisciplin() + "," +
                     resultat.getTid() + "," + resultat.getDato());
-            writer.newLine();  // Nyt resultat på en ny linje
+            writer.newLine();
             System.out.println("Resultat gemt: " + resultat.getDisciplin() + " - " + resultat.getTid());
         } catch (IOException e) {
             System.out.println("Fejl ved skrivning af resultat til fil: " + e.getMessage());
@@ -124,11 +124,10 @@ public class FileUtil {
                     double tid = Double.parseDouble(data[2].trim());
                     String dato = data[3].trim();
 
-                    // Find svømmer ud fra medlemsnummer
                     KonkurrenceSvoemmer svoemmer = mm.findKonkurrenceSvoemmerByMedlemsnummer(medlemsnummer);
 
                     if (svoemmer != null) {
-                        // Opret resultat og tilføj det til resultatMap
+
                         Resultat resultat = new Resultat(svoemmer, disciplin, tid, dato);
                         resultatMap.computeIfAbsent(svoemmer, k -> new ArrayList<>()).add(resultat);
                     } else {
@@ -142,13 +141,13 @@ public class FileUtil {
     }
 
     public static void opdaterMedlem(String filePath, Medlem opdateretMedlem) {
-        // Indlæs medlemsliste fra fil
+
         MedlemManagement mm = new MedlemManagement();
         mm.loadMedlemmerFromFile();
         List<Medlem> medlemsListe = mm.getMedlemmer();
         boolean medlemFundet = false;
 
-        // Opdater medlem
+
         for (int i = 0; i < medlemsListe.size(); i++) {
             Medlem medlem = medlemsListe.get(i);
             if (medlem.getMedlemsnummer().equalsIgnoreCase(opdateretMedlem.getMedlemsnummer())) {
@@ -163,7 +162,7 @@ public class FileUtil {
             return;
         }
 
-        // Skriv listen tilbage til filen
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, false))) {
             for (Medlem medlem : medlemsListe) {
                 String linje = String.format("%s,%s,%s,%s,%s,%s",
@@ -185,7 +184,6 @@ public class FileUtil {
         List<Hold> holdListe = hold.getHoldListe();
         boolean holdFundet = false;
 
-        // Opdater medlem
         for (int i = 0; i < hold.getHoldListe().size(); i++) {
             Hold hold1 = hold.getHoldListe().get(i);
             if (hold.getHoldnavn().equalsIgnoreCase(opdateretHold.getHoldnavn())) {
@@ -199,8 +197,7 @@ public class FileUtil {
             System.out.println("Hold med navnet " + opdateretHold.getHoldnavn() + " blev ikke fundet.");
             return;
         }
-        //String holdnavn, Traener traener, String ugeDag, int tid, List<KonkurrenceSvoemmer> deltagere
-        // Skriv listen tilbage til filen
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, false))) {
             for (Hold hold1 : holdListe) {
                 String linje = String.format("%s,%s,%s,%s,%s",
@@ -269,18 +266,15 @@ public class FileUtil {
             String linje;
 
             while ((linje = reader.readLine()) != null) {
-                String[] data = linje.split(";");
-
-                // Kontrollér, at linjen har det forventede format
-
-                    System.out.println(data[0]);
+                    String[] data = linje.split("!");
+                    String holdnavn = data[0];
+                    System.out.println(holdnavn + "\n");
 
             }
         } catch (IOException e) {
             throw new RuntimeException("Fejl ved indlæsning af fil: " + e.getMessage(), e);
         }
     }
-
 
     public static void loadTraenerFromFile(String filePath, List<Traener> traenerListe) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -344,7 +338,7 @@ public class FileUtil {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Indtast medlemsnummer på medlemmet, der skal slettes: ");
-        String medlemsnummer = scanner.nextLine(); // Læs medlemsnummer fra brugeren
+        String medlemsnummer = scanner.nextLine();
         File inputfil = new File(filePath);
         File tempfil = new File("tempfil.txt");
 
@@ -357,8 +351,8 @@ public class FileUtil {
 
             while ((currentLine = reader.readLine()) != null) {
                 if (currentLine.toLowerCase().contains(medlemsnummer.toLowerCase())) {
-                    medlemFundet = true; // Marker medlem som fundet
-                    continue; // Spring denne linje over (dvs. slet medlemmet)
+                    medlemFundet = true;
+                    continue;
                 }
                 writer.write(currentLine + System.lineSeparator());
             }
@@ -369,17 +363,15 @@ public class FileUtil {
         }
 
         if (medlemFundet) {
-            // Erstat den gamle fil med den nye
             if (inputfil.delete() && tempfil.renameTo(new File(filePath))) {
                 System.out.println("Medlemmet med medlemsnummer " + medlemsnummer + " er blevet slettet.");
             } else {
                 System.out.println("Kunne ikke opdatere medlemsfilen.");
             }
         } else {
-            tempfil.delete(); // Slet tempfilen, da der ikke var nogen ændringer
+            tempfil.delete();
             System.out.println("Medlemsnummeret blev ikke fundet.");
         }
-        //If kontigent.listen.contains medlemsnr remove.medlem også for medlemlisten i medlemmanagement
     }
 
     public static void sletHold(String filePath) {
@@ -418,49 +410,6 @@ public class FileUtil {
         } else {
             tempfil.delete();
             System.out.println("Holdet blev ikke fundet.");
-        }
-    }
-
-    public static void sletTraener(String filePath) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Indtast navnet på træneren, der skal slettes: ");
-        String traenerNavn = scanner.nextLine();
-        File inputfil = new File(filePath);
-        File tempfil = new File("tempfil.txt");
-
-        boolean traenerFundet = false;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(tempfil))) {
-
-            String currentLine;
-
-            while ((currentLine = reader.readLine()) != null) {
-                if (currentLine.toLowerCase().contains(traenerNavn.toLowerCase())) {
-                    traenerFundet = true;
-                    continue;
-                }
-                writer.write(currentLine + System.lineSeparator());
-            }
-
-        } catch (IOException e) {
-            System.out.println("Der opstod en fejl under læsning eller skrivning af filen: " + e.getMessage());
-            return;
-        }
-
-        if (traenerFundet) {
-
-            if (inputfil.delete() && tempfil.renameTo(new File(filePath))) {
-                System.out.println("Træneren med navnet " + traenerNavn + " er blevet slettet.");
-            } else {
-                System.out.println("Kunne ikke opdatere trænerfilen.");
-            }
-
-
-        } else {
-            tempfil.delete();
-            System.out.println("Træneren blev ikke fundet.");
         }
     }
 }

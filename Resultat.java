@@ -96,13 +96,13 @@ public class Resultat {
             for (Medlem medlem : ps.getMedlemmer()) {
                 if (medlem.getMedlemsnummer().equalsIgnoreCase(medlemsnummer)) {
                     medlemToUpdate = medlem;
-                    break;  // Stop med at søge, når medlemmet er fundet
+                    break;
                 }
             }
 
             if (medlemToUpdate == null) {
                 System.out.println("Medlem med medlemsnummer " + medlemsnummer + " blev ikke fundet.");
-                continue;  // Fortsæt til næste iteration af løkken, hvis medlemsnummer ikke blev fundet
+                continue;
             }
 
             System.out.println("Medlem fundet: " + medlemToUpdate.getNavn());
@@ -130,7 +130,7 @@ public class Resultat {
         }
     }
 
-    public void visTop5Resultater() {
+    public void visTop5Resultater()  {
 
         mm.loadMedlemmerFromFile();
         FileUtil.laesResultaterFraFil(FILE_PATH_RESULTAT, resultatMap);

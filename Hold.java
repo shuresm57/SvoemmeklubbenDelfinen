@@ -39,7 +39,7 @@ public class Hold {
         this.ugeDag = ugeDag;
         this.tid = tid;
         this.deltagere = deltagere;
-        holdListe.add(this); // Fjern dette, hvis det ikke er nødvendigt
+        holdListe.add(this);
     }
 
     public Hold(String holdnavn) {
@@ -173,7 +173,6 @@ public class Hold {
             }
         }
 
-        // Angiv tidspunkt for træning
         int tid = 0;
         while (tid <= 0) {
             System.out.println("Angiv tidspunkt holdet skal træne (f.eks. 10 for kl. 10:00): ");

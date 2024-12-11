@@ -99,7 +99,6 @@ public class Traener {
                         }
         }
 
-    //Hjælpefunktion til FileUtil.loadHoldFromFile
     public void loadFromFile(){
         FileUtil.loadTraenerFromFile(FILE_PATH_TRAENER,traenerListe);
     }

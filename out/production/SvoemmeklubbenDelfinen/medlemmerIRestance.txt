@@ -1,0 +1,1 @@
+KS001,KonkurrenceSvoemmer,Victor,1995-03-15,30123456,victor@swim.dk

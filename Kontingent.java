@@ -12,6 +12,7 @@ public class Kontingent {
     private static final            String              FILE_PATH_RESTANCE          = "medlemmerIRestance.txt";
 
     private                         List<Medlem>        medlemmerIRestance          = new ArrayList<>();
+    private                         List<Medlem>        medlemmerikkeRestance       = new ArrayList<>();
     private                         MedlemManagement    mm                          = new MedlemManagement();
     private                         Scanner             scanner                     = new Scanner(System.in);
 
@@ -24,6 +25,11 @@ public class Kontingent {
             mm.loadMedlemmerFromFile();
             alreadyLoaded = true;
         }
+    }
+
+    public void addmmtilMiR(){
+        alreadyLoaded();
+        medlemmerikkeRestance.addAll(mm.getMedlemmer());
     }
 
     public double beregnKontingent(Medlem medlem) {
@@ -49,7 +55,7 @@ public class Kontingent {
 
     public void kontingentListe() {
         alreadyLoaded();
-        for(Medlem medlem : mm.getMedlemmer()) {
+        for(Medlem medlem : medlemmerikkeRestance) {
             double kontingent = beregnKontingent(medlem);
             System.out.println("Navn: " + medlem.getNavn() + " " + "Kontingent: " + kontingent +
                     " Har betalt kontingent for " + LocalDate.now().getYear() + ": " + medlem.harBetalt());
@@ -61,7 +67,7 @@ public class Kontingent {
         alreadyLoaded();
         String medlemsnummer = scanner.nextLine();
         Medlem medlemToUpdate = null;
-        for (Medlem m : mm.getMedlemmer()) {
+        for (Medlem m : medlemmerikkeRestance) {
             if (m.getMedlemsnummer().equalsIgnoreCase(medlemsnummer)) {
                 medlemToUpdate = m;
                 System.out.println("Medlem fundet: " + medlemToUpdate);
@@ -79,7 +85,7 @@ public class Kontingent {
 
                 FileUtil.saveMedlemmer(FILE_PATH_RESTANCE, medlemmerIRestance, false);
                 System.out.println("Medlem tilføjet til restance: " + medlemToUpdate);
-                break; // Stop loopet, når medlemmet er fundet og opdateret
+                break;
             }
         }
         if (medlemToUpdate == null) {
@@ -101,6 +107,7 @@ public class Kontingent {
     public void runKontingent(){
             FileUtil.loadMedlemmerFromFile(FILE_PATH_RESTANCE, 6, medlemmerIRestance, null);
             Scanner scanner = new Scanner(System.in);
+            addmmtilMiR();
 
             while (true) {
                 System.out.println("1. Forventet total kontingent for " + LocalDate.now().getYear());

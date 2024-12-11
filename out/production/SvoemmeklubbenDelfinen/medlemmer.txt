@@ -27,4 +27,5 @@ MN006,Motionist,Sophie,1986-08-18,55678901,sophie@motion.dk
 MN007,Motionist,Jack,1983-02-22,56789012,jack@motion.dk
 MN008,Motionist,Madeline,1990-09-19,57890123,madeline@motion.dk
 MN009,Motionist,Oliver,1979-05-25,58901234,oliver@motion.dk
-MN010,Motionist,Grace,1984-11-30,59012345,grace@motion.dk
+MN010,Motionist,Grace,1984-11-30,59012345,grace@motion.dkMN011,Motionist,Oskar Tuska,1900-04-04,112,oskar@kea.dk,11-12-2024
+KS011,KonkurrenceSvoemmer,Oskar Tuska,2000-05-05,10101010,oskar@kea.dk,11-12-2024
