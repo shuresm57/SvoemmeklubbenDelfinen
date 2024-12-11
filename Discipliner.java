@@ -11,7 +11,7 @@ public class Discipliner {
         discipliner.add("Rygcrawl");
         discipliner.add("Brystsvømning");
     }
-
+//
     public List<String> getDiscipliner(){
         return discipliner;
     }
