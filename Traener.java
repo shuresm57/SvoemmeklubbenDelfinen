@@ -1,20 +1,17 @@
-import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 //changes 9/12
 public class Traener {
 
-    private String navn;
-    private int alder;
-    private String telefon;
-    private String email;
-    private Hold hold;
-    private List<Traener> traenerListe = new ArrayList<>();
-    private static final String FILE_PATH_TRAENER = "traenere.txt";
-    private MedlemManagement mm = new MedlemManagement();
-    private List<Resultat> resultater = new ArrayList<>();
+    private                 String              navn;
+    private                 int                 alder;
+    private                 String              telefon;
+    private                 String              email;
+    private                 List<Traener>       traenerListe            = new ArrayList<>();
+    private                 List<Resultat>      resultater              = new ArrayList<>();
+    private static final    String              FILE_PATH_TRAENER       = "traenere.txt";
+
 
     public void visResultater(){
         Resultat resultat = new Resultat();
@@ -105,12 +102,10 @@ public class Traener {
         Hold hold = new Hold();
         Staevne staevne = new Staevne();
         Resultat resultat = new Resultat();
-        resultat.laesResultaterFraFil();
-
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("1. Vis Hold");
-        System.out.println("2. Oret hold");
+        System.out.println("2. Opret hold");
         System.out.println("3. tilføj deltager til hold");
         System.out.println("4. Fjern hold");
         System.out.println("5. Tilføj træningsresultater");
@@ -143,18 +138,19 @@ public class Traener {
                 break;
             case 6:
                 System.out.println("Vis træningsresultater.");
-                resultat.laesResultaterFraFil();
                 resultat.printResultater();
                 break;
             case 7:
                 System.out.println("Opret stævne.");
                 staevne.opretStaevne();
+                break;
             case 8:
-                System.out.println("Vis stævneresultater. (virker ikke endnu)");
+                System.out.println("Vis stævner");
                 staevne.printStaevneListe();
+                break;
             case 9:
                 System.out.println("Logger ud...");
-                mm.login();
+                Start.login();
                 break;
             case 0:
                 System.out.println("Programmet afsluttes.");

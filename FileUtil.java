@@ -67,14 +67,24 @@ public class FileUtil {
         }
     }
 
-    public static void saveStaevne(String filSti, List<Staevne> staevneListe) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filSti, true))) {
+    public static void saveStaevne(String filePath, List<Staevne> staevneListe) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             for (Staevne staevne : staevneListe) {
-                String newLine = System.getProperty("line.separator");
-                String staevneNavn = (staevne.getStaevneNavn() != null) ? staevne.getStaevneNavn() : "intet freaking staevne dud";
-                // Fjerner kommaet mellem disciplinerne og tiderne
-                writer.write(staevne.getStaevneNavn() + "," + staevne.getDato() + newLine + staevne.getValgteDiscipliner() + newLine + staevne.getTider() + newLine);
-                writer.newLine();
+                writer.write(staevne.getStaevneNavn() + "," + staevne.getDato() + System.lineSeparator());
+
+                List<String> discipliner = staevne.getValgteDiscipliner();
+                for (String disciplin : discipliner) {
+                    writer.write(disciplin + System.lineSeparator());
+                }
+
+                writer.write("[");
+
+                List<String> tider = staevne.getTider();
+                for (int i = 0; i < tider.size(); i++) {
+                    writer.write(System.lineSeparator() + "    " + tider.get(i));
+                }
+
+                writer.write(System.lineSeparator() + "]" + System.lineSeparator());
             }
             System.out.println("Stævne gemt til fil.");
         } catch (IOException e) {
@@ -82,36 +92,16 @@ public class FileUtil {
         }
     }
 
-
-
-    public static void loadStaevne(String filSti, List<Staevne> staevneListe) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filSti))) {
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",", 4); // Split kun på de første 3 kommaer for at bevare deltagere korrekt
-                if (data.length == 4) {
-                    // Datafelter
-                    String navn = data[0].trim();
-                    String dato = data[1].trim();
-                    List<String> discipliner = Arrays.asList(data[2].replace("[", "").replace("]", "").split(";"));
-
-                    List<String> deltagere = Arrays.asList(data[3]
-                            .replace("[", "")
-                            .replace("]", "")
-                            .split("\\.,")); // Split på ".,"
-
-
-                    Staevne currentStaevne = new Staevne(navn, dato, discipliner, deltagere);
-                    staevneListe.add(currentStaevne);
-                }
-            }
+    public static void saveResultat(String filePath, Resultat resultat) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            writer.write(resultat.getSvoemmer().getMedlemsnummer() + "," + resultat.getDisciplin() + "," +
+                    resultat.getTid() + "," + resultat.getDato());
+            writer.newLine();  // Nyt resultat på en ny linje
+            System.out.println("Resultat gemt: " + resultat.getDisciplin() + " - " + resultat.getTid());
         } catch (IOException e) {
-            System.out.println("Fejl ved læsning fra fil: " + e.getMessage());
+            System.out.println("Fejl ved skrivning af resultat til fil: " + e.getMessage());
         }
     }
-
-
 
     public static void writeTraenerToFile(String filePath, List<Traener> traenerListe) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
@@ -122,6 +112,38 @@ public class FileUtil {
             System.out.println("Træner(e) gemt til fil.");
         } catch (IOException e) {
             System.out.println("Fejl ved skrivning af trænere til fil: " + e.getMessage());
+        }
+    }
+
+    public static void laesResultaterFraFil(String filePath, HashMap<KonkurrenceSvoemmer,List<Resultat>> resultatMap) {
+        resultatMap = new HashMap<>();
+        MedlemManagement mm = new MedlemManagement();
+        mm.loadMedlemmerFromFile();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length == 4) {
+                    String medlemsnummer = data[0];
+                    String disciplin = data[1];
+                    double tid = Double.parseDouble(data[2]);
+                    String dato = data[3];
+
+                    // Find svømmer ud fra medlemsnummer
+                    KonkurrenceSvoemmer svoemmer = mm.findKonkurrenceSvoemmerByMedlemsnummer(medlemsnummer);
+
+                    // Hvis svømmeren ikke findes, skal du måske håndtere det
+                    if (svoemmer != null) {
+                        Resultat resultat = new Resultat(svoemmer, disciplin, tid, dato);
+                        resultatMap.computeIfAbsent(svoemmer, k -> new ArrayList<>()).add(resultat);
+                    } else {
+                        System.out.println("Svømmer med medlemsnummer " + medlemsnummer + " ikke fundet.");
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Fejl ved læsning af resultater fra fil: " + e.getMessage());
         }
     }
 
@@ -229,6 +251,38 @@ public class FileUtil {
             System.out.println("Trænere indlæst fra fil.");
         } catch (IOException e) {
             System.out.println("Fejl ved indlæsning af trænere fra fil: " + e.getMessage());
+        }
+    }
+
+    public static void loadStaevne(String filSti, List<Staevne> staevneListe) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filSti))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String navnOgDato = line;
+                String[] headerData = navnOgDato.split(",", 2);
+                if (headerData.length < 2) continue;
+
+                String navn = headerData[0].trim();
+                String dato = headerData[1].trim();
+
+                String disciplinerLine = reader.readLine().trim();
+                List<String> discipliner = Arrays.asList(
+                        disciplinerLine.replace("[", "").replace("]", "").split(",")
+                );
+
+                List<String> deltagere = new ArrayList<>();
+                String tiderLine;
+                while ((tiderLine = reader.readLine()) != null && !tiderLine.equals("]")) {
+                    deltagere.add(tiderLine.trim());
+                }
+
+                // Opret Staevne-objekt og tilføj til listen
+                Staevne currentStaevne = new Staevne(navn, dato, discipliner, deltagere);
+                staevneListe.add(currentStaevne);
+            }
+        } catch (IOException e) {
+            System.out.println("Fejl ved læsning fra fil: " + e.getMessage());
         }
     }
 

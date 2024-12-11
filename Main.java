@@ -1,8 +1,9 @@
 public class Main {
 
     public static void main(String[]args){
+
+        Start start = new Start();
+        start.run();
+
     }
-
-
 }
-//changes 9/12}

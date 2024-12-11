@@ -5,25 +5,12 @@ import java.time.format.*;
 //commit 5/12
 public class MedlemManagement {
 
-    private static final String FILE_PATH_MEDLEMMER = "medlemmer.txt";  // Filstien til at gemme og læse medlemmer fra.
-    private List<Medlem> medlemmer = new ArrayList<>();// Liste til at gemme medlemmer.
-    private List<String> medlemsNumre = new ArrayList<>();
-    private static final String FORMAND_USERNAME = "formand";
-    private static final String FORMAND_PASSWORD = "1234";
+    // Filstien til at gemme og læse medlemmer fra.
+    private static final            String                  FILE_PATH_MEDLEMMER         = "medlemmer.txt";
 
-    private static final String TRAENER_USERNAME = "traener";
-    private static final String TRAENER_PASSWORD = "1234";
-
-    private static final String KASSERER_USERNAME = "kasserer";
-    private static final String KASSERER_PASSWORD = "1234";
-
-    private static final Kontingent kontingent = new Kontingent();
-    private static final Traener traener = new Traener();
-    //changes 9/12
-    public static void main(String[] args) {
-        MedlemManagement persistens = new MedlemManagement();
-        persistens.run();// Kør programmet og lad brugeren vælge og oprette medlemmer.
-    }
+    // Liste til at gemme medlemmer.
+    private                         List<Medlem>            medlemmer                   = new ArrayList<>();
+    private                         List<String>            medlemsNumre                = new ArrayList<>();
 
     public List<Medlem> getMedlemmer() {
         return medlemmer;
@@ -33,82 +20,47 @@ public class MedlemManagement {
         return medlemsNumre;
     }
 
-    public String login() {
-        Console console = System.console();
-        while (true) {
-            System.out.println("Svømmeklub Delfinen ");
-            System.out.print("Indtast brugernavn: ");
-            String username = console.readLine();
-
-            char[] passwordArray = console.readPassword("Indtast kodeord: ");
-            String password = new String(passwordArray);
-
-            if (username.equals(FORMAND_USERNAME) && password.equals(FORMAND_PASSWORD)) {
-                return "formand";
-            } else if (username.equals(TRAENER_USERNAME) && password.equals(TRAENER_PASSWORD)) {
-                return "traener";
-            } else if (username.equals(KASSERER_USERNAME) && password.equals(KASSERER_PASSWORD)) {
-                return "kasserer";
-            } else {
-                System.out.println("Forkert brugernavn eller kode. Prøv igen!");
-            }
-        }
-    }
-
-    public void run() {
-        FileUtil.loadMedlemmerFromFile(FILE_PATH_MEDLEMMER,7, medlemmer,medlemsNumre);
+    public void runMedlemManagement(){
         Scanner scanner = new Scanner(System.in);
 
+        System.out.println("\n1. Opret medlem");
+        System.out.println("2. Gem medlemmer til fil");
+        System.out.println("3. Ændre medlemsoplysninger");
+        System.out.println("4. Vis medlemmer");
+        System.out.println("5. Slet medlemmer");
+        System.out.println("9. Log ud");
+        System.out.println("0. Afslut");
 
-        String rolle = login();
+        int option = scanner.nextInt();
+        scanner.nextLine();
 
-        while (true) {
-            System.out.println("\nVelkommen, " + rolle + "!");
-            if ("formand".equalsIgnoreCase(rolle)) {
-                System.out.println("\n1. Opret medlem");
-                System.out.println("2. Gem medlemmer til fil");
-                System.out.println("3. Ændre medlemsoplysninger");
-                System.out.println("4. Vis medlemmer");
-                System.out.println("5. Slet medlemmer");
-                System.out.println("9. Log ud");
-                System.out.println("0. Afslut");
-            } else if ("traener".equalsIgnoreCase(rolle)) {
-                traener.runTraener();
-            } else if ("kasserer".equalsIgnoreCase(rolle)) {
-                kontingent.runKontingent();
-            }
-
-            System.out.print("Vælg en mulighed: ");
-            int option = scanner.nextInt();
-            scanner.nextLine();
-
-            // Håndter muligheder baseret på rolle med if-else
-            if ("formand".equalsIgnoreCase(rolle)) {
-                if (option == 1) {
-                    //loadMedlemmerFromFile();
-                    opretMedlem();
-                } else if (option == 2) {
-                    FileUtil.saveMedlemmer(FILE_PATH_MEDLEMMER,medlemmer, true);
-                } else if (option == 3) {
-                    opdaterMedlem();
-                } else if (option == 4) {
-                    visMedlemmer();
-                } else if (option == 5) {
-                    FileUtil.sletMedlem(FILE_PATH_MEDLEMMER);
-                } else if (option == 9){
-                    System.out.println("Logger ud...");
-                    login();
-                } else if (option == 0) {
-                    System.out.println("Programmet afsluttes.");
-                    break;
-                } else {
-                    System.out.println("Ugyldigt valg.");
-                }
-            } else if ("traener".equalsIgnoreCase(rolle)) {
-                traener.runTraener();
-            } else if ("kasserer".equalsIgnoreCase(rolle)) {
-                kontingent.runKontingent();
-            }
+        switch (option) {
+            case 1:
+                //loadMedlemmerFromFile();
+                opretMedlem();
+                break;
+            case 2:
+                FileUtil.saveMedlemmer(FILE_PATH_MEDLEMMER, medlemmer, true);
+                break;
+            case 3:
+                opdaterMedlem();
+                break;
+            case 4:
+                visMedlemmer();
+                break;
+            case 5:
+                FileUtil.sletMedlem(FILE_PATH_MEDLEMMER);
+                break;
+            case 9:
+                System.out.println("Logger ud...");
+                Start.login();
+                break;
+            case 0:
+                System.out.println("Programmet afsluttes.");
+                break;
+            default:
+                System.out.println("Ugyldigt valg.");
+                break;
         }
     }
 

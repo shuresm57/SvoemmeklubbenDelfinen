@@ -5,26 +5,25 @@ import java.util.*;
 
 public class Kontingent {
 
-    private static final double UNGDOMS_KONTINGENT = 1000.0;
-    private static final double SENIOR_KONTINGENT = 1600.0;
-    private static final double SENIOR_RABAT = 0.75;
-    private static final double PASSIVT_KONTINGENT = 500.0;
-    private List<Medlem> medlemmerIRestance = new ArrayList<>();
-    private MedlemManagement mm = new MedlemManagement();
-    private Scanner scanner = new Scanner(System.in);
-    private static final String FILE_PATH_RESTANCE = "medlemmerIRestance.txt";
+    private static final            double              UNGDOMS_KONTINGENT          = 1000.0;
+    private static final            double              SENIOR_KONTINGENT           = 1600.0;
+    private static final            double              SENIOR_RABAT                = 0.75;
+    private static final            double              PASSIVT_KONTINGENT          = 500.0;
+    private static final            String              FILE_PATH_RESTANCE          = "medlemmerIRestance.txt";
 
-    //changes 9/12
+    private                         List<Medlem>        medlemmerIRestance          = new ArrayList<>();
+    private                         MedlemManagement    mm                          = new MedlemManagement();
+    private                         Scanner             scanner                     = new Scanner(System.in);
+
+    private                         boolean             alreadyLoaded               = false;
+
     public Kontingent() {}
 
-    public static void main(String[] args) {
-        Kontingent k = new Kontingent();
-        MedlemManagement mm = new MedlemManagement();
-        mm.loadMedlemmerFromFile();
-        k.kontingentListe();
-        k.totalKontingent();
-
-
+    public void alreadyLoaded(){
+        if (!alreadyLoaded) {
+            mm.loadMedlemmerFromFile();
+            alreadyLoaded = true;
+        }
     }
 
     public double beregnKontingent(Medlem medlem) {
@@ -40,6 +39,7 @@ public class Kontingent {
     }
 
     public void totalKontingent() {
+        alreadyLoaded();
         double total = 0.0;
         for (Medlem medlem : mm.getMedlemmer()) {
             total += beregnKontingent(medlem);
@@ -48,7 +48,7 @@ public class Kontingent {
     }
 
     public void kontingentListe() {
-        mm.loadMedlemmerFromFile();
+        alreadyLoaded();
         for(Medlem medlem : mm.getMedlemmer()) {
             double kontingent = beregnKontingent(medlem);
             System.out.println("Navn: " + medlem.getNavn() + " " + "Kontingent: " + kontingent +
@@ -57,8 +57,8 @@ public class Kontingent {
         totalKontingent();
     }
 
-
     public void tilfoejMedlemTilRestance() {
+        alreadyLoaded();
         String medlemsnummer = scanner.nextLine();
         Medlem medlemToUpdate = null;
         for (Medlem m : mm.getMedlemmer()) {
@@ -87,7 +87,8 @@ public class Kontingent {
         }
     }
 
-        public void getMedlemmerIRestance () {
+    public void getMedlemmerIRestance () {
+            alreadyLoaded();
             if (!medlemmerIRestance.isEmpty()) {
                 System.out.println("Medlemmer der er i restance:\n");
                 medlemmerIRestance.forEach(System.out::println);
@@ -97,7 +98,7 @@ public class Kontingent {
 
         }
 
-        public void runKontingent(){
+    public void runKontingent(){
             FileUtil.loadMedlemmerFromFile(FILE_PATH_RESTANCE, 6, medlemmerIRestance, null);
             Scanner scanner = new Scanner(System.in);
             MedlemManagement mm = new MedlemManagement();
@@ -109,7 +110,7 @@ public class Kontingent {
                 System.out.println("2. Medlemmer i restance");
                 System.out.println("3. Sæt et medlem i restance");
                 System.out.println("4. Slet et medlem fra restance");
-                System.out.println("5. Vis medlemmer");
+                System.out.println("5. Vis medlemmer og betalingsstatus");
                 System.out.println("9. Log ud");
                 System.out.println("0. Afslut");
 
@@ -131,15 +132,14 @@ public class Kontingent {
                         break;
                     case 4:
                         FileUtil.sletMedlem(FILE_PATH_RESTANCE);
-                        FileUtil.loadMedlemmerFromFile(FILE_PATH_RESTANCE, 6, medlemmerIRestance, null);
                         break;
                     case 5:
                         System.out.println("Viser alle medlemmer\n");
-                        mm.getMedlemmer().forEach(System.out::println);
+                        kontingentListe();
                         break;
                     case 9:
                         System.out.println("Logger ud...");
-                        mm.login();
+                        Start.login();
                     case 0:
                         System.exit(0);
                     default:

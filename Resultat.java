@@ -8,18 +8,17 @@ public class Resultat {
     private String dato;
     private KonkurrenceSvoemmer svoemmer;
     private Traener traener;
+    private Resultat resultat;
     private List<String> discipliner;
     private List<Resultat> resultater = new ArrayList<>();
     private HashMap<KonkurrenceSvoemmer,List<Resultat>> resultatMap;
     private MedlemManagement mm = new MedlemManagement();
-    //changes 9/12
-    private static final String filePath = "traeningsResultater.txt";
+    private static final String FILE_PATH_RESULTAT = "traeningsResultater.txt";
 
     public static void main(String[] args) {
         Resultat r = new Resultat();
         //r.traeningsResultater();
         //r.visTop5Resultater();
-        r.laesResultaterFraFil();
         r.printResultater();
     }
 
@@ -47,6 +46,7 @@ public class Resultat {
     }
 
     public void printResultater() {
+        FileUtil.laesResultaterFraFil(FILE_PATH_RESULTAT,resultatMap);
         for (Map.Entry<KonkurrenceSvoemmer, List<Resultat>> entry : resultatMap.entrySet()) {
             KonkurrenceSvoemmer svoemmer = entry.getKey(); // Svømmeren (KonkurrenceSvoemmer)
             List<Resultat> resultater = entry.getValue(); // Resultaterne for svømmeren
@@ -60,7 +60,6 @@ public class Resultat {
             System.out.println(); // Ny linje efter hver svømmer
         }
     }
-
 
     public List<String> getDiscipliner() {
         return discipliner;
@@ -76,6 +75,10 @@ public class Resultat {
 
     public double getTid() {
         return tid;
+    }
+
+    public String getDato() {
+        return dato;
     }
 
     public KonkurrenceSvoemmer getSvoemmer() {
@@ -128,62 +131,16 @@ public class Resultat {
 
             Resultat resu = new Resultat((KonkurrenceSvoemmer) medlemToUpdate, valgtDisciplin, tid, dato);
             resultatMap.put(svoemmer, resultater);
-            gemResultatTilFil(resu);
+            FileUtil.saveResultat(FILE_PATH_RESULTAT, resu);
             System.out.println("Resultat oprettet: " + resu);
             break;
         }
     }
 
-    public void gemResultatTilFil(Resultat resultat) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(resultat.svoemmer.getMedlemsnummer() + "," + resultat.getDisciplin() + "," +
-                    resultat.getTid() + "," + resultat.dato);
-            writer.newLine();  // Nyt resultat på en ny linje
-            System.out.println("Resultat gemt: " + resultat.getDisciplin() + " - " + resultat.getTid());
-        } catch (IOException e) {
-            System.out.println("Fejl ved skrivning af resultat til fil: " + e.getMessage());
-        }
-    }
-
-    public void laesResultaterFraFil() {
-        resultatMap = new HashMap<>();
-        MedlemManagement mm = new MedlemManagement();
-        mm.loadMedlemmerFromFile();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length == 4) {
-                    String medlemsnummer = data[0];
-                    String disciplin = data[1];
-                    double tid = Double.parseDouble(data[2]);
-                    String dato = data[3];
-
-                    // Find svømmer ud fra medlemsnummer
-                    KonkurrenceSvoemmer svoemmer = mm.findKonkurrenceSvoemmerByMedlemsnummer(medlemsnummer);
-
-                    // Hvis svømmeren ikke findes, skal du måske håndtere det
-                    if (svoemmer != null) {
-                        Resultat resultat = new Resultat(svoemmer, disciplin, tid, dato);
-                        resultatMap.computeIfAbsent(svoemmer, k -> new ArrayList<>()).add(resultat);
-                    } else {
-                        System.out.println("Svømmer med medlemsnummer " + medlemsnummer + " ikke fundet.");
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Fejl ved læsning af resultater fra fil: " + e.getMessage());
-        }
-    }
-
-
     public void visTop5Resultater() {
         mm.loadMedlemmerFromFile();
-        laesResultaterFraFil();
-
+        FileUtil.laesResultaterFraFil(FILE_PATH_RESULTAT,resultatMap);
         List<String> discipliner = Arrays.asList("Butterfly", "Crawl", "Rygcrawl", "Brystsvømning");
-
         for (String disciplin : discipliner) {
             List<Resultat> disciplinResultater = new ArrayList<>();
 
@@ -204,7 +161,6 @@ public class Resultat {
             }
         }
     }
-
 
     @Override
     public String toString() {

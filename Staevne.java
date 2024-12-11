@@ -1,5 +1,6 @@
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Staevne {
@@ -19,13 +20,6 @@ public class Staevne {
         Staevne s = new Staevne();
         s.opretStaevne();
     }
-
-    public void printStaevneListe() {
-        FileUtil.loadStaevne(FILE_PATH_STAEVNE,staevneListe);
-        staevneListe.forEach(System.out::println);
-    }
-
-
 
     public Staevne() {
     }
@@ -62,6 +56,19 @@ public class Staevne {
         return valgteDiscipliner;
     }
 
+    public List<String> getDeltagere() {
+        return deltagere;
+    }
+
+    public List<String> getKssvoemmer() {
+        return kssvoemmer;
+    }
+
+    public void printStaevneListe() {
+        FileUtil.loadStaevne(FILE_PATH_STAEVNE,staevneListe);
+        staevneListe.forEach(System.out::println);
+    }
+
     public void tilfoejKSframedlemtilKs() {
         mm.loadMedlemmerFromFile();
         for (Medlem ks : mm.getMedlemmer()) {
@@ -69,14 +76,6 @@ public class Staevne {
                 kssvoemmer.add(ks.getMedlemsnummer() + " " + ks.getNavn());
             }
         }
-    }
-
-    public List<String> getDeltagere() {
-        return deltagere;
-    }
-
-    public List<String> getKssvoemmer() {
-        return kssvoemmer;
     }
 
     public void opretStaevne() {
@@ -93,7 +92,7 @@ public class Staevne {
             String dato = scanner.nextLine();
 
             while (true) {
-                System.out.println("Vælg disciplin (indtast nummer). Tast 0 for at afslutte:");
+                System.out.println("Vælg disciplin (indtast nummer):");
                 for (int i = 0; i < d.getDiscipliner().size(); i++) {
                     System.out.println((i + 1) + ". " + d.getDiscipliner().get(i));
                 }
@@ -145,7 +144,7 @@ public class Staevne {
             Staevne nytStaevne = new Staevne(navn, dato, valgteDiscipliner, tider);
             staevneListe.add(nytStaevne);
             FileUtil.saveStaevne(FILE_PATH_STAEVNE, staevneListe);
-            System.out.println("Stævne oprettet: " + nytStaevne.getStaevneNavn());
+            System.out.println("Stævne oprettet: " + navn);
             break;
         }
     }
